@@ -3,15 +3,16 @@ import Link from 'next/link';
 import { Button } from '../button/Button';
 import { CTABanner } from '../cta/CTABanner';
 import { Section } from '../layout/Section';
+import { AppConfig } from '../utils/AppConfig';
 
 const Banner = () => (
   <Section>
     <CTABanner
-      title="Lorem ipsum dolor sit amet consectetur adipisicing elit."
-      subtitle="Start your Free Trial."
+      title={AppConfig.cta.title}
+      subtitle={AppConfig.cta.subtitle}
       button={
-        <Link href="https://creativedesignsguru.com/category/nextjs/">
-          <Button>Get Started</Button>
+        <Link href={AppConfig.cta.link}>
+          <Button>{AppConfig.cta.button}</Button>
         </Link>
       }
     />

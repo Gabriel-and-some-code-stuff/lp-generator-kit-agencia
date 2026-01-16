@@ -22,6 +22,13 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
 
   const router = useRouter();
 
+  // Verifica se a imagem é uma URL externa (começa com http ou https)
+  const isExternalImage =
+    props.image.startsWith('http') || props.image.startsWith('https');
+  const imagePath = isExternalImage
+    ? props.image
+    : `${router.basePath}${props.image}`;
+
   return (
     <div className={verticalFeatureClass}>
       <div className="w-full text-center sm:w-1/2 sm:px-6">
@@ -30,7 +37,7 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
       </div>
 
       <div className="w-full p-6 sm:w-1/2">
-        <img src={`${router.basePath}${props.image}`} alt={props.imageAlt} />
+        <img src={imagePath} alt={props.imageAlt} />
       </div>
     </div>
   );

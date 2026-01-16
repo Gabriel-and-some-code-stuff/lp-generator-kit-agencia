@@ -5,18 +5,18 @@ type ILogoProps = {
 };
 
 const Logo = (props: ILogoProps) => {
-  const size = props.xl ? '44' : '32';
   const fontStyle = props.xl
     ? 'font-semibold text-3xl'
     : 'font-semibold text-xl';
 
   return (
     <span className={`inline-flex items-center text-gray-900 ${fontStyle}`}>
+      {/* Você pode trocar este SVG por uma tag <img src="..." /> se tiver o arquivo da logo */}
       <svg
         className="mr-1 stroke-current text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
+        width={24}
+        height={24}
         viewBox="0 0 24 24"
         strokeWidth="1.5"
         fill="none"
