@@ -16,7 +16,7 @@ const Hero = () => (
           <Link href="/">Home</Link>
         </li>
         <li>
-          <Link href="/">{AppConfig.hero.button}</Link>
+          <Link href={AppConfig.hero.buttonLink}>{AppConfig.hero.button}</Link>
         </li>
       </NavbarTwoColumns>
     </Section>

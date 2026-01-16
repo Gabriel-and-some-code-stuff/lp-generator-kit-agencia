@@ -1,63 +1,60 @@
 export const AppConfig = {
-  site_name: 'MSK Odontologia',
-  title: 'MSK - Dentista Alphaville e Alto da Lapa',
+  site_name: 'Nome da Empresa',
+  title: 'Título da Landing Page | Promessa Principal',
   description:
-    'Clínica odontológica completa em Alphaville e Alto da Lapa. Dra. Ana Kalaf e equipe. Especialistas em Implantes, Ortodontia, Estética e muito mais.',
+    'Descrição curta para SEO (meta description) focada em conversão e autoridade.',
   locale: 'pt-br',
 
   hero: {
-    title: 'Você merece um',
-    highlight: 'sorriso perfeito.',
+    title: 'Transforme a vida do seu',
+    highlight: 'cliente ideal.',
     description:
-      'Todos os especialistas num único lugar. Atendimento humanizado em Alphaville e Alto da Lapa com a Dra. Ana Kalaf e equipe. Temos horários flexíveis.',
-    button: 'Agende pelo Whatsapp',
-    buttonLink: 'https://wa.me/5511999999999',
+      'Uma descrição persuasiva que aborda a dor principal do cliente e apresenta a sua solução como a melhor alternativa do mercado.',
+    button: 'Chamada para Ação',
+    buttonLink: '#',
   },
 
   features: [
     {
-      title: 'Implante Dentário',
+      title: 'Diferencial ou Serviço 1',
       description:
-        'Recupere sua autoestima e função mastigatória. Trabalhamos com as melhores técnicas de implantodontia para devolver o seu sorriso com segurança e durabilidade.',
+        'Explicação detalhada sobre como este serviço resolve um problema específico do cliente de forma eficiente.',
       image: '/assets/images/feature.svg',
-      imageAlt: 'Implante Dentário MSK',
+      imageAlt: 'Imagem ilustrativa do serviço 1',
       reverse: false,
     },
     {
-      title: 'Ortodontia Moderna',
+      title: 'Diferencial ou Serviço 2',
       description:
-        'Correção dentária para crianças e adultos. Oferecemos tratamentos ortodônticos eficientes para alinhar seu sorriso e melhorar sua saúde bucal.',
+        'Destaque para a tecnologia, metodologia ou benefício exclusivo que sua empresa oferece neste ponto.',
       image: '/assets/images/feature2.svg',
-      imageAlt: 'Ortodontia MSK',
+      imageAlt: 'Imagem ilustrativa do serviço 2',
       reverse: true,
     },
     {
-      title: 'Facetas e Lentes de Contato',
+      title: 'Diferencial ou Serviço 3',
       description:
-        'Transforme a estética do seu sorriso. Ideal para corrigir cor, formato e tamanho dos dentes, garantindo um resultado harmonioso e natural.',
+        'Prova social ou garantia de qualidade que elimina o risco e aumenta a confiança do comprador.',
       image: '/assets/images/feature3.svg',
-      imageAlt: 'Estética Dental MSK',
+      imageAlt: 'Imagem ilustrativa do serviço 3',
       reverse: false,
     },
   ],
 
   cta: {
-    title: 'Agende agora sua avaliação e orçamento!',
+    title: 'Pronto para dar o próximo passo?',
     subtitle:
-      'Atendemos Convênios e Particular. Horários flexíveis para sua comodidade.',
-    button: 'Agendar pelo Whatsapp',
-    link: 'https://wa.me/5511999999999',
+      'Entre em contato hoje mesmo e descubra como podemos ajudar você a alcançar seus objetivos.',
+    button: 'Falar com Especialista',
+    link: '#',
   },
 
   footer: {
-    company_name: 'MSK Odontologia',
-    links: [
-      { label: 'Unidade Alto da Lapa: Rua Cerro Corá, 585 cj 507', href: '#' },
-      { label: 'Unidade Alphaville: Al. Grajaú, 60 – cj 2415', href: '#' },
-      {
-        label: 'Resp. Téc: Dra. Ana Paula Kalaf (CRO-SP: 98.094)',
-        href: '#',
-      },
+    company_name: 'Nome da Empresa',
+    contacts: [
+      'Endereço: Rua Exemplo, 123 - Cidade/UF',
+      'Telefone: (11) 99999-9999',
+      'Email: contato@empresa.com.br',
     ],
   },
 };
