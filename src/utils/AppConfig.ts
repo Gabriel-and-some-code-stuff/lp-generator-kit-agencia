@@ -1,60 +1,47 @@
+// Este arquivo funciona como interface.
+// O Agente deve gerar o conteúdo EXATAMENTE respeitando esta estrutura.
+
 export const AppConfig = {
   site_name: 'Nome da Empresa',
-  title: 'Título da Landing Page | Promessa Principal',
-  description:
-    'Descrição curta para SEO (meta description) focada em conversão e autoridade.',
+  title: 'Título Otimizado para SEO | Promessa',
+  description: 'Descrição persuasiva para SEO e compartilhamento social.',
   locale: 'pt-br',
 
   hero: {
-    title: 'Transforme a vida do seu',
-    highlight: 'cliente ideal.',
+    title: 'Headline Impactante',
+    highlight: 'Destaque em Cor',
     description:
-      'Uma descrição persuasiva que aborda a dor principal do cliente e apresenta a sua solução como a melhor alternativa do mercado.',
-    button: 'Chamada para Ação',
-    buttonLink: '#',
+      'Subtítulo que resolve uma dor específica e convida para ação.',
+    button: 'Texto do CTA',
+    buttonLink: '#', // Link para WhatsApp ou Formulário
   },
 
   features: [
     {
-      title: 'Diferencial ou Serviço 1',
-      description:
-        'Explicação detalhada sobre como este serviço resolve um problema específico do cliente de forma eficiente.',
-      image: '/assets/images/feature.svg',
-      imageAlt: 'Imagem ilustrativa do serviço 1',
+      title: 'Benefício 1',
+      description: 'Como isso resolve a vida do cliente.',
+      image: '/assets/images/feature.svg', // URL Externa ou local
+      imageAlt: 'Descrição da imagem',
       reverse: false,
     },
     {
-      title: 'Diferencial ou Serviço 2',
-      description:
-        'Destaque para a tecnologia, metodologia ou benefício exclusivo que sua empresa oferece neste ponto.',
+      title: 'Benefício 2',
+      description: 'Descrição focada em autoridade e confiança.',
       image: '/assets/images/feature2.svg',
-      imageAlt: 'Imagem ilustrativa do serviço 2',
+      imageAlt: 'Descrição da imagem',
       reverse: true,
-    },
-    {
-      title: 'Diferencial ou Serviço 3',
-      description:
-        'Prova social ou garantia de qualidade que elimina o risco e aumenta a confiança do comprador.',
-      image: '/assets/images/feature3.svg',
-      imageAlt: 'Imagem ilustrativa do serviço 3',
-      reverse: false,
     },
   ],
 
   cta: {
-    title: 'Pronto para dar o próximo passo?',
-    subtitle:
-      'Entre em contato hoje mesmo e descubra como podemos ajudar você a alcançar seus objetivos.',
-    button: 'Falar com Especialista',
+    title: 'Chamada Final para Ação',
+    subtitle: 'Remoção de objeção final (ex: Orçamento sem compromisso).',
+    button: 'Texto do Botão Final',
     link: '#',
   },
 
   footer: {
     company_name: 'Nome da Empresa',
-    contacts: [
-      'Endereço: Rua Exemplo, 123 - Cidade/UF',
-      'Telefone: (11) 99999-9999',
-      'Email: contato@empresa.com.br',
-    ],
+    contacts: ['Endereço ou Cidade', 'Telefone / WhatsApp', 'Email'],
   },
 };
