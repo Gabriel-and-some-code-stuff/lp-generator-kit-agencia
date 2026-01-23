@@ -27,9 +27,28 @@ yarn-error.log*
 
 # dotenv local files
 .env*.local
+.env
 
 # local folder
 local
 
 # vercel
 .vercel
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+clientes.csv
+clientes_output.csv
+agent/clientes.csv
+agent/clientes_output.csv
+
+# Instaladores e Binários (CRUCIAL PARA O GITHUB)
+*.exe
+*.dmg
+*.pkg
+*.iso
+```
