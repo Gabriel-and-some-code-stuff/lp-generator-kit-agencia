@@ -1,86 +1,88 @@
 import pandas as pd
+import time
 import os
+from scrape import scrape_website
+from ai_generator import gerar_config_site
+from deploy import atualizar_arquivos_locais, deploy_vercel
 
-# Configurações
-PLANILHA_INPUT = "clientes.csv"  # Nome do arquivo CSV exportado da planilha
-PLANILHA_OUTPUT = "clientes_processados.csv" # Onde vamos salvar os resultados
+PLANILHA_INPUT = "clientes.csv" 
+PLANILHA_OUTPUT = "clientes_processados.csv"
 
-def ler_planilha():
-    """
-    Lê o arquivo CSV exportado do Google Sheets.
-    Assume que:
-    - Coluna A (índice 0) é o Nome do Cliente
-    - Coluna C (índice 2) é a URL do Site
-    """
-    if not os.path.exists(PLANILHA_INPUT):
-        print(f"❌ Erro: Arquivo '{PLANILHA_INPUT}' não encontrado na raiz.")
-        print("   -> Exporte sua planilha do Google como CSV e salve aqui.")
-        return None
+def main():
+    print("\n🤖 INICIANDO AGENTE GERADOR DE LPs (Ollama)")
+    print("===========================================\n")
+
+    # Verifica planilha
+    caminho_csv = PLANILHA_INPUT
+    if not os.path.exists(caminho_csv):
+        caminho_csv = "../" + PLANILHA_INPUT
+        if not os.path.exists(caminho_csv):
+            print(f"❌ Planilha '{PLANILHA_INPUT}' não encontrada.")
+            return
 
     try:
-        # Lê o CSV. O header=0 significa que a primeira linha é o cabeçalho.
-        # Ajuste 'usecols' se souber os nomes exatos das colunas, ou use índices.
-        # Aqui, vamos ler tudo e filtrar pelo índice para garantir.
-        df = pd.read_csv(PLANILHA_INPUT)
-        
-        print(f"✅ Planilha carregada com sucesso! Encontradas {len(df)} linhas.")
-        return df
-    
+        df = pd.read_csv(caminho_csv)
     except Exception as e:
         print(f"❌ Erro ao ler CSV: {e}")
-        return None
+        return
 
-def processar_clientes(df):
-    """Itera sobre os clientes e extrai as informações básicas."""
-    
-    # Lista para guardar resultados (será útil na fase de escrita)
-    resultados = []
+    # Garante que a coluna de output existe (Novo Site - Coluna D)
+    if 'Novo Site' not in df.columns:
+        df['Novo Site'] = ""
 
     for index, row in df.iterrows():
-        # Acessa por posição (iloc) ou nome da coluna se o CSV tiver cabeçalho limpo
-        # Ajuste os índices conforme sua planilha real:
-        # Coluna A -> índice 0 (Nome)
-        # Coluna C -> índice 2 (URL)
-        
         try:
-            nome_cliente = str(row.iloc[0]).strip()
-            url_site = str(row.iloc[2]).strip()
-            
-            # Validação básica
-            if pd.isna(url_site) or url_site == 'nan' or not url_site.startswith('http'):
-                print(f"⚠️  Linha {index + 2}: URL inválida ou vazia para {nome_cliente}. Pulando.")
-                continue
+            # Tenta pegar pelo nome da coluna, fallback para índice
+            # A=0, B=1, C=2 (Site Atual), D=3 (Novo Site)
+            cliente = str(row.get('Nome', row.iloc[0]))
+            url_atual = str(row.get('Site Atual', row.iloc[2]))
+            novo_site_atual = str(row.get('Novo Site', row.iloc[3])) if len(row) > 3 else ""
+        except Exception:
+            print("⚠️ Erro ao ler linha da planilha. Pulando.")
+            continue
 
-            print(f"🚀 Processando Cliente {index + 1}: {nome_cliente}")
-            print(f"   🔗 URL Alvo: {url_site}")
-            
-            # AQUI ENTRARÁ A FASE 2 (SCRAPING) E 3 (IA)
-            # Por enquanto, apenas simulamos
-            lp_gerada = "https://lp-teste.vercel.app" # Placeholder
-            
-            # Adiciona ao resultado para salvar depois
-            resultados.append({
-                "Nome": nome_cliente,
-                "URL Original": url_site,
-                "LP Gerada": lp_gerada
-            })
-            
-        except Exception as e:
-            print(f"❌ Erro na linha {index + 2}: {e}")
+        # Validações para pular
+        if pd.isna(url_atual) or len(url_atual) < 5 or url_atual == 'nan':
+            continue
+        
+        # Se já tem site gerado, pula
+        if "vercel.app" in novo_site_atual:
+            print(f"⏩ {cliente}: Já processado. Pulando.")
+            continue
 
-    return pd.DataFrame(resultados)
+        print(f"\n▶️  Processando: {cliente}")
+        
+        # 1. Scrape
+        site_data = scrape_website(url_atual)
+        if not site_data:
+            df.at[index, 'Novo Site'] = "Erro: Site Off"
+            continue
+        site_data['url'] = url_atual
+        
+        # 2. IA Generation
+        config = gerar_config_site(site_data)
+        
+        # 3. Build & Deploy
+        if atualizar_arquivos_locais(config):
+            final_url = deploy_vercel(cliente)
+            print(f"   ✅ SUCESSO: {final_url}")
+            # Se usou nome da coluna, salva nela, senão usa índice
+            if 'Novo Site' in df.columns:
+                df.at[index, 'Novo Site'] = final_url
+            else:
+                 df.iloc[index, 3] = final_url
+        else:
+            print("   ❌ Falha na geração da IA")
+            if 'Novo Site' in df.columns:
+                df.at[index, 'Novo Site'] = "Erro IA"
+            
+        # Salva o progresso
+        df.to_csv(PLANILHA_OUTPUT, index=False)
+        
+        # Pausa para não sobrecarregar
+        time.sleep(2)
+
+    print(f"\n🏁 FIM. Resultados salvos em '{PLANILHA_OUTPUT}'.")
 
 if __name__ == "__main__":
-    print("🤖 Iniciando Agente de Landing Pages...")
-    
-    df_clientes = ler_planilha()
-    
-    if df_clientes is not None:
-        df_resultados = processar_clientes(df_clientes)
-        
-        # Salva o output (simulando a escrita na Coluna E)
-        if not df_resultados.empty:
-            df_resultados.to_csv(PLANILHA_OUTPUT, index=False)
-            print(f"\n💾 Resultados salvos em '{PLANILHA_OUTPUT}'")
-        else:
-            print("\n⚠️ Nenhum cliente processado com sucesso.")
+    main()
