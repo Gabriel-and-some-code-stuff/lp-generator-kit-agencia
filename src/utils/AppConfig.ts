@@ -1,47 +1,43 @@
-// Este arquivo funciona como interface.
-// O Agente deve gerar o conteúdo EXATAMENTE respeitando esta estrutura.
-
 export const AppConfig = {
-  site_name: 'Nome da Empresa',
-  title: 'Título Otimizado para SEO | Promessa',
-  description: 'Descrição persuasiva para SEO e compartilhamento social.',
+  site_name: 'Landing Page Generator',
+  title: 'Título do Site | Promessa',
+  description: 'Descrição padrão para SEO.',
   locale: 'pt-br',
 
   hero: {
-    title: 'Headline Impactante',
-    highlight: 'Destaque em Cor',
-    description:
-      'Subtítulo que resolve uma dor específica e convida para ação.',
-    button: 'Texto do CTA',
-    buttonLink: '#', // Link para WhatsApp ou Formulário
+    title: 'Sua Promessa Principal',
+    highlight: 'Destaque',
+    description: 'Descrição persuasiva do seu produto ou serviço.',
+    button: 'Começar Agora',
+    buttonLink: '#',
   },
 
   features: [
     {
       title: 'Benefício 1',
-      description: 'Como isso resolve a vida do cliente.',
-      image: '/assets/images/feature.svg', // URL Externa ou local
-      imageAlt: 'Descrição da imagem',
+      description: 'Descrição detalhada do benefício.',
+      image: '/assets/images/feature.svg',
+      imageAlt: 'Imagem 1',
       reverse: false,
     },
     {
       title: 'Benefício 2',
-      description: 'Descrição focada em autoridade e confiança.',
+      description: 'Descrição detalhada do benefício.',
       image: '/assets/images/feature2.svg',
-      imageAlt: 'Descrição da imagem',
+      imageAlt: 'Imagem 2',
       reverse: true,
     },
   ],
 
   cta: {
-    title: 'Chamada Final para Ação',
-    subtitle: 'Remoção de objeção final (ex: Orçamento sem compromisso).',
-    button: 'Texto do Botão Final',
+    title: 'Chamada para Ação Final',
+    subtitle: 'Texto de apoio.',
+    button: 'Clique Aqui',
     link: '#',
   },
 
   footer: {
     company_name: 'Nome da Empresa',
-    contacts: ['Endereço ou Cidade', 'Telefone / WhatsApp', 'Email'],
+    contacts: ['Endereço da Empresa', '(11) 99999-9999', 'contato@empresa.com'],
   },
 };
