@@ -5,13 +5,15 @@ type ILogoProps = {
 };
 
 const Logo = (props: ILogoProps) => {
+  const config = AppConfig as any;
+  const siteName = config?.site_name || 'Landing Page';
+
   const fontStyle = props.xl
     ? 'font-semibold text-3xl'
     : 'font-semibold text-xl';
 
   return (
     <span className={`inline-flex items-center text-gray-900 ${fontStyle}`}>
-      {/* Você pode trocar este SVG por uma tag <img src="..." /> se tiver o arquivo da logo */}
       <svg
         className="mr-1 stroke-current text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +32,7 @@ const Logo = (props: ILogoProps) => {
         <path d="M4 20h14" />
       </svg>
 
-      {AppConfig.site_name}
+      {siteName}
     </span>
   );
 };

@@ -22,12 +22,20 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
 
   const router = useRouter();
 
-  // Verifica se a imagem é uma URL externa (começa com http ou https)
+  // Tratamento robusto de imagem
+  const safeImage = props.image || '';
   const isExternalImage =
-    props.image.startsWith('http') || props.image.startsWith('https');
-  const imagePath = isExternalImage
-    ? props.image
-    : `${router.basePath}${props.image}`;
+    safeImage.startsWith('http') || safeImage.startsWith('https');
+
+  // Lógica clara de seleção de imagem (evita erros de sintaxe e lógica)
+  let imagePath;
+  if (safeImage === '') {
+    imagePath = '/assets/images/feature.svg'; // Fallback local
+  } else if (isExternalImage) {
+    imagePath = safeImage;
+  } else {
+    imagePath = `${router.basePath}${safeImage}`;
+  }
 
   return (
     <div className={verticalFeatureClass}>
@@ -37,7 +45,11 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
       </div>
 
       <div className="w-full p-6 sm:w-1/2">
-        <img src={imagePath} alt={props.imageAlt} />
+        <img
+          src={imagePath}
+          alt={props.imageAlt}
+          className="rounded-lg shadow-md"
+        />
       </div>
     </div>
   );

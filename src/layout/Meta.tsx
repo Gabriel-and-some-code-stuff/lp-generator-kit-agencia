@@ -12,6 +12,7 @@ type IMetaProps = {
 
 const Meta = (props: IMetaProps) => {
   const router = useRouter();
+  const config = AppConfig as any; // Cast para segurança
 
   return (
     <>
@@ -55,8 +56,8 @@ const Meta = (props: IMetaProps) => {
           title: props.title,
           description: props.description,
           url: props.canonical,
-          locale: AppConfig.locale,
-          site_name: AppConfig.site_name,
+          locale: config?.locale || 'pt-br',
+          site_name: config?.site_name || 'Site',
         }}
       />
     </>
