@@ -14,10 +14,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 # --- CONFIGURAÇÕES ---
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
-MODELO = "qwen"  # Recomendado: qwen (7b) ou deepseek-r1
+# Usando Qwen 7B -> Excelente balanceamento entre performance e inteligência
+MODELO = "qwen" 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Raiz do projeto
 
-# --- TEMPLATE PADRÃO (Para Reset) ---
+# --- TEMPLATE PADRÃO (Para Reset e Fallback) ---
 DEFAULT_APP_CONFIG = """
 export const AppConfig = {
   site_name: 'Landing Page Generator',
@@ -69,7 +70,7 @@ export const AppConfig = {
 # --- UTILITÁRIOS ---
 
 def setup_selenium():
-    """Configura o Chrome em modo stealth para evitar bloqueios."""
+    """Configura o Chrome em modo headless otimizado."""
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
@@ -82,18 +83,32 @@ def setup_selenium():
         driver = webdriver.Chrome(service=service, options=chrome_options)
         return driver
     except Exception as e:
-        print(f"❌ Erro Driver: {e}")
+        print(f"Erro no Driver: {e}")
         return None
 
 def clean_json_string(text):
-    """Limpeza cirúrgica do JSON retornado pela IA."""
+    """Limpa o output da IA para extrair apenas o JSON."""
     text = re.sub(r'```json', '', text, flags=re.IGNORECASE)
     text = re.sub(r'```', '', text)
+    
     start = text.find('{')
     end = text.rfind('}') + 1
+    
     if start != -1 and end != -1:
-        return text[start:end]
+        text = text[start:end]
+    
+    # Remove quebras de linha perigosas dentro de strings JSON não escapadas
+    text = text.replace('\n', ' ').replace('\r', '')
     return text
+
+def validar_conteudo_config(conteudo):
+    """Validação estrita do conteúdo gerado."""
+    if not conteudo or not isinstance(conteudo, str): return False
+    if "TS code here" in conteudo: return False
+    if "export const AppConfig" not in conteudo: return False
+    # Qwen as vezes gera comentários no início, garantimos que tem o export
+    if len(conteudo) < 100: return False
+    return True
 
 def reset_to_default():
     """Restaura o projeto para o estado limpo original."""
@@ -105,164 +120,175 @@ def reset_to_default():
     # Reseta Tailwind para cor padrão (Sky Blue)
     tw_path = os.path.join(BASE_PATH, "tailwind.config.js")
     with open(tw_path, "r", encoding="utf-8") as f: content = f.read()
+    # Usa regex para encontrar qualquer cor definida e resetar
     new_content = re.sub(r"500: '#.*?'", "500: '#0ea5e9'", content)
     with open(tw_path, "w", encoding="utf-8") as f: f.write(new_content)
 
-# --- SCRAPER INTELIGENTE (Inspirado no DeepSeek Crawler) ---
+def gerar_app_config_fallback(nome, url):
+    """Gera um AppConfig padrão de alta qualidade se a IA falhar."""
+    # Retorna o template default com dados básicos do cliente
+    return DEFAULT_APP_CONFIG.replace('Landing Page Generator', nome).replace('#', url)
 
-def scrape_smart(url):
-    """Extrai conteúdo focado em metadata e estrutura, não apenas texto bruto."""
-    if not url.startswith('http'): url = 'https://' + url
+# --- CORE FUNCTIONS ---
+
+def processar_cliente(nome, url, objetivo_especifico=None, cor_personalizada=None, modo_deploy=False):
+    log = []
+    def add_log(msg):
+        print(msg)
+        log.append(msg)
+
+    # 1. Reset Inicial
+    reset_to_default()
+    add_log(f"🚀 [AGENTE QWEN] Iniciando: {nome}")
     
-    print(f"🕵️  Deep Scraping: {url}")
+    # 2. SCRAPE INTELIGENTE
+    add_log(f"🕵️ Analisando identidade digital: {url}")
+    site_data = None
     driver = setup_selenium()
-    if not driver: return None
+    
+    if not driver: return {"status": "error", "log": log, "msg": "Falha driver"}
 
     try:
         driver.set_page_load_timeout(45)
+        if not url.startswith('http'): url = 'https://' + url
         driver.get(url)
-        time.sleep(5) # Aguarda hidratação do JS
+        time.sleep(4)
         
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         
-        # 1. Tenta achar a Logo Oficial
+        # Tenta pegar logo (meta tags ou img com class logo)
         logo_url = ""
-        # Procura por favicons ou meta tags primeiro (mais confiável)
         meta_logo = soup.find("meta", property="og:image")
         if meta_logo: logo_url = meta_logo["content"]
         
-        # Se não achou, procura img com 'logo' no nome/classe
-        if not logo_url:
-            logo_img = soup.find("img", {"src": re.compile(r"logo", re.I)}) or \
-                       soup.find("img", {"class": re.compile(r"logo", re.I)})
-            if logo_img and logo_img.get("src"):
-                src = logo_img["src"]
-                if src.startswith("//"): logo_url = "https:" + src
-                elif src.startswith("/"): logo_url = url.rstrip("/") + src
-                else: logo_url = src
-
-        # 2. Extração de Texto Hierárquica
-        # Remove lixo
-        for tag in soup(["script", "style", "svg", "form", "nav", "noscript", "iframe"]):
+        # Limpeza
+        for tag in soup(["script", "style", "svg", "form", "footer", "nav", "header", "noscript"]):
             tag.extract()
             
-        # Pega H1, H2, H3 e P para dar contexto estruturado à IA
-        content = []
-        for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'li']):
-            text = element.get_text(strip=True)
-            if len(text) > 10: # Filtra textos muito curtos
-                tag_name = element.name.upper()
-                content.append(f"[{tag_name}]: {text}")
+        text = soup.get_text(separator=' ', strip=True)[:3000] # Qwen aguenta um pouco mais de contexto
         
-        full_text = "\n".join(content)[:6000] # Limite de tokens
+        site_data = {"text": text, "url": url, "logo": logo_url}
         
-        return {"text": full_text, "logo": logo_url, "url": url}
-
     except Exception as e:
-        print(f"❌ Erro Scrape: {e}")
-        return None
+        if driver: driver.quit()
+        return {"status": "error", "log": log, "msg": f"Scrape Error: {str(e)}"}
     finally:
-        driver.quit()
+        if driver: driver.quit()
 
-# --- IA GENERATION (QWEN) ---
-
-def generate_lp_config(site_data, objetivo):
-    print(f"🧠 Gerando Copy B2B com {MODELO}...")
+    # 3. IA COPYWRITER PRO (QWEN)
+    add_log(f"🧠 Criando Copy de Alta Conversão ({MODELO})...")
     
     prompt = f"""
-    Você é um Copywriter Especialista em B2B e Conversão (Estilo Unbounce/ClickFunnels).
+    Você é um Arquiteto de Informação e Copywriter Sênior.
+    Sua missão é criar o JSON de configuração para uma Landing Page moderna e persuasiva para a empresa "{nome}".
     
-    OBJETIVO: Criar o JSON de configuração para uma Landing Page de alta performance.
-    CLIENTE: {site_data['url']}
-    OBJETIVO DO CLIENTE: {objetivo}
-    LOGO DETECTADA: {site_data['logo']}
-    
-    CONTEXTO DO SITE (Estruturado):
+    CONTEXTO EXTRAÍDO DO SITE ATUAL:
     {site_data['text']}
     
-    DIRETRIZES:
-    1. **Gramática Impecável:** Português do Brasil, formal mas persuasivo.
-    2. **Estrutura PAS:** Problema (Hero), Agitação (Features), Solução (CTA).
-    3. **Imagens:** Use URLs do Unsplash de alta qualidade que combinem com o nicho.
-    4. **Logo:** Se a LOGO DETECTADA estiver vazia, deixe vazio. Se tiver, use-a.
+    OBJETIVO ESTRATÉGICO:
+    {objetivo_especifico if objetivo_especifico else 'Criar autoridade imediata, modernizar a marca e vender o serviço principal.'}
     
-    Gere APENAS o JSON abaixo preenchido. NÃO MUDE A ESTRUTURA DAS CHAVES.
+    DIRETRIZES DE DESIGN E COPY (SWISS STYLE):
+    1. Ignore o site antigo. Crie uma "Nova Realidade" premium e minimalista.
+    2. Use Português do Brasil impecável, tom profissional e direto.
+    3. Escolha uma categoria de imagem do Unsplash abaixo baseada no nicho:
+       - Corporativo: https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800
+       - Saúde: https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800
+       - Construção: https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800
+       - Tech: https://images.unsplash.com/photo-1518770660439-4636190af475?w=800
+       - Logística: https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800
     
+    FORMATO DE SAÍDA (JSON ÚNICO E VÁLIDO):
     {{
-        "app_config": "export const AppConfig = {{ site_name: 'NOME DA EMPRESA', title: 'HEADLINE SEO', description: 'META DESC', locale: 'pt-br', primary_color: '#HEX_COR', hero: {{ title: 'HEADLINE IMPACTANTE (PROBLEMA/BENEFÍCIO)', highlight: 'DESTAQUE', description: 'SUBTITULO PERSUASIVO', button: 'CTA PRIMÁRIO', buttonLink: '{site_data['url']}', image: 'URL_UNSPLASH_HERO_HD' }}, features: [ {{ title: 'BENEFÍCIO 1', description: 'COMO RESOLVE', image: 'URL_UNSPLASH_1', imageAlt: 'alt', reverse: false }}, {{ title: 'BENEFÍCIO 2', description: 'COMO RESOLVE', image: 'URL_UNSPLASH_2', imageAlt: 'alt', reverse: true }} ], socialProof: {{ title: 'Empresas que confiam', logos: [] }}, cta: {{ title: 'CTA FINAL', subtitle: 'GARANTIA/ESCASSEZ', button: 'CTA FINAL', link: '{site_data['url']}' }}, footer: {{ company_name: 'NOME', contacts: ['CONTATOS'] }} }};",
-        "primary_color": "#HEX_COR",
-        "whatsapp_message": "Olá! Analisei o site da [EMPRESA] e criei uma proposta de Landing Page focada em conversão. Segue o link: [LINK]"
+        "app_config": "export const AppConfig = {{ site_name: '{nome}', title: 'TITULO SEO | PROMESSA', description: 'DESCRIÇÃO SEO', locale: 'pt-br', primary_color: '#HEX_COR', hero: {{ title: 'HEADLINE IMPACTANTE', highlight: 'DESTAQUE', description: 'TEXTO DE APOIO PERSUASIVO', button: 'CTA PRINCIPAL', buttonLink: '{url}', image: 'URL_UNSPLASH_ESCOLHIDA' }}, features: [ {{ title: 'BENEFÍCIO 1', description: 'DESCRIÇÃO DO BENEFÍCIO', image: 'URL_UNSPLASH_ESCOLHIDA', imageAlt: 'Alt Text 1', reverse: false }}, {{ title: 'BENEFÍCIO 2', description: 'DESCRIÇÃO DO BENEFÍCIO', image: 'URL_UNSPLASH_ESCOLHIDA', imageAlt: 'Alt Text 2', reverse: true }} ], socialProof: {{ title: 'Empresas que confiam', logos: [] }}, cta: {{ title: 'CHAMADA FINAL', subtitle: 'REMOÇÃO DE OBJEÇÃO', button: 'CTA FINAL', link: '{url}' }}, footer: {{ company_name: '{nome}', contacts: ['Contato via Site'] }} }};",
+        "primary_color": "#HEXCODE_MODERNO",
+        "whatsapp_message": "Olá {nome}, vi seu site e criei uma versão premium focada em conversão: [LINK]"
     }}
     """
     
+    json_res = {}
+    config_code = ""
+    cor_final = "#000000"
+    
     try:
-        res = requests.post(OLLAMA_API_URL, json={
+        response = requests.post(OLLAMA_API_URL, json={
             "model": MODELO,
             "prompt": prompt,
             "stream": False,
             "format": "json",
-            "options": {"temperature": 0.2, "num_ctx": 8192}
+            "options": {
+                "temperature": 0.2, # Qwen é criativo, 0.2 segura ele na estrutura
+                "num_ctx": 4096,
+                "num_predict": 2500
+            }
         })
-        return json.loads(clean_json_string(res.json()['response']))
+        
+        if response.status_code == 200:
+            raw_response = response.json()['response']
+            clean_response = clean_json_string(raw_response)
+            json_res = json.loads(clean_response)
+            config_code = json_res.get('app_config', '')
+            cor_final = json_res.get('primary_color', '#03A9F4')
+        else:
+            add_log(f"⚠️ Erro API IA: {response.text}")
+            if "model requires more system memory" in response.text:
+                 add_log("❌ Memória insuficiente. Feche navegadores/abas extras.")
+
     except Exception as e:
-        print(f"❌ Erro IA: {e}")
-        return None
+        add_log(f"⚠️ Erro IA Exception: {str(e)}")
 
-# --- PROCESSADOR CENTRAL ---
-
-def run_agent(nome, url, objetivo, modo_deploy):
-    # 1. Reset (Segurança)
-    reset_to_default()
-    
-    # 2. Scrape
-    data = scrape_smart(url)
-    if not data: return {"status": "error", "msg": "Falha no Scrape"}
-    
-    # 3. AI
-    config = generate_lp_config(data, objetivo)
-    if not config: return {"status": "error", "msg": "Falha na IA"}
-    
-    # 4. Write Files
+    # 4. ATUALIZAR ARQUIVOS
+    add_log("💾 Aplicando Design System...")
     try:
-        # AppConfig
-        ts_path = os.path.join(BASE_PATH, "src", "utils", "AppConfig.ts")
-        with open(ts_path, "w", encoding="utf-8") as f:
-            f.write(config['app_config'])
+        base_path = "." if os.path.exists("src") else ".."
+        
+        # Validação e Fallback
+        if not validar_conteudo_config(config_code):
+            add_log("⚠️ IA gerou conteúdo instável. Aplicando Template Premium de Fallback.")
+            config_code = gerar_app_config_fallback(nome, url)
+            cor_final = "#1E293B" 
+
+        # Salva AppConfig
+        with open(f"{base_path}/src/utils/AppConfig.ts", "w", encoding="utf-8") as f:
+            f.write(config_code)
             
-        # Tailwind
-        tw_path = os.path.join(BASE_PATH, "tailwind.config.js")
-        with open(tw_path, "r", encoding="utf-8") as f: content = f.read()
-        new_tw = re.sub(r"500: '#.*?'", f"500: '{config['primary_color']}'", content)
-        with open(tw_path, "w", encoding="utf-8") as f: f.write(new_tw)
+        # Salva Cores (Tailwind)
+        cor_usuario = cor_personalizada if cor_personalizada else cor_final
+        tw_path = f"{base_path}/tailwind.config.js"
+        if os.path.exists(tw_path):
+            with open(tw_path, "r", encoding="utf-8") as f: content = f.read()
+            # Regex robusto para achar a cor, não importa o formato
+            new_content = re.sub(r"500: '#.*?'", f"500: '{cor_usuario}'", content)
+            with open(tw_path, "w", encoding="utf-8") as f: f.write(new_content)
         
     except Exception as e:
-        return {"status": "error", "msg": f"Erro escrita: {e}"}
-    
-    # 5. Deploy
+        return {"status": "error", "log": log, "msg": f"Erro Arquivos: {str(e)}"}
+
+    # 5. DEPLOY
     final_url = "http://localhost:3000"
     if modo_deploy:
-        print("☁️ Deploying...")
+        add_log("☁️ Subindo para Vercel...")
         slug = re.sub(r'[^a-z0-9-]', '', nome.lower().replace(' ', '-'))[:30]
         cmd = f"vercel --prod --yes --force --name lp-{slug}"
         try:
-            # Roda prettier
-            subprocess.run("npx prettier --write src/utils/AppConfig.ts", shell=True, cwd=BASE_PATH, stderr=subprocess.DEVNULL)
-            # Deploy
-            res = subprocess.run(cmd, shell=True, cwd=BASE_PATH, capture_output=True, text=True, timeout=300)
-            if res.returncode == 0:
-                urls = re.findall(r'https://[^\s]+\.vercel\.app', res.stdout)
+            subprocess.run("npx prettier --write src/utils/AppConfig.ts", shell=True, stderr=subprocess.DEVNULL, cwd=base_path)
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300, cwd=base_path)
+            if result.returncode == 0:
+                urls = re.findall(r'https://[^\s]+\.vercel\.app', result.stdout)
                 final_url = urls[0] if urls else "URL não encontrada"
             else:
-                return {"status": "error", "msg": f"Deploy falhou: {res.stderr[:100]}"}
+                add_log(f"Erro Deploy: {result.stderr[:100]}")
         except Exception as e:
-            return {"status": "error", "msg": f"Erro Deploy: {e}"}
-            
-    # 6. Finaliza
+            final_url = f"Erro Deploy: {str(e)}"
+
+    add_log("✅ Landing Page Pronta!")
     return {
-        "status": "success",
-        "url": final_url,
-        "whatsapp": config['whatsapp_message'].replace("[LINK]", final_url).replace("[EMPRESA]", nome)
+        "status": "success", 
+        "log": log, 
+        "url": final_url, 
+        "whatsapp": json_res.get('whatsapp_message', f"Olá {nome}, criei um novo site para você: {final_url}"),
+        "color_used": cor_usuario
     }
 
 if __name__ == "__main__":
-    print("Execute via Dashboard.")
+    print("Use o Dashboard: streamlit run agent/dashboard.py")

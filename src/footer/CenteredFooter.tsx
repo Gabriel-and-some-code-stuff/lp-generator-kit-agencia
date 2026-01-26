@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { FooterCopyright } from './FooterCopyright';
 import { FooterIconList } from './FooterIconList';
 
 type ICenteredFooterProps = {
@@ -9,30 +10,25 @@ type ICenteredFooterProps = {
 };
 
 const CenteredFooter = (props: ICenteredFooterProps) => (
-  <div className="text-center">
-    {props.logo}
+  <div className="flex flex-col items-center text-center md:items-start md:text-left">
+    <div className="mb-8">{props.logo}</div>
 
-    <nav>
-      <ul className="navbar mt-5 flex flex-row justify-center text-xl font-medium text-gray-800">
+    <nav className="mb-8 w-full">
+      <ul className="flex flex-col gap-4 text-sm font-medium uppercase tracking-wider text-gray-600 md:flex-row md:gap-8">
         {props.children}
       </ul>
     </nav>
 
-    <div className="mt-8 flex justify-center">
-      <FooterIconList>{props.iconList}</FooterIconList>
-    </div>
+    <div className="my-8 w-full border-t border-gray-100"></div>
 
-    <div className="mt-8 text-sm text-gray-500">
-      © {new Date().getFullYear()} Todos os direitos reservados.
+    <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+      <div className="text-xs text-gray-400">
+        <FooterCopyright />
+      </div>
+      <div className="flex">
+        <FooterIconList>{props.iconList}</FooterIconList>
+      </div>
     </div>
-
-    <style jsx>
-      {`
-        .navbar :global(li) {
-          @apply mx-4;
-        }
-      `}
-    </style>
   </div>
 );
 

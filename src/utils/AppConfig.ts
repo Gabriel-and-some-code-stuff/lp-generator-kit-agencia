@@ -1,59 +1,52 @@
-// Este arquivo será sobrescrito pela IA, mas aqui está a estrutura ideal
 export const AppConfig = {
   site_name: 'Landing Page Generator',
-  title: 'Título Otimizado | Promessa',
-  description: 'Descrição persuasiva para SEO.',
+  title: 'Soluções de Alto Impacto para seu Negócio',
+  description: 'Aumente suas vendas e autoridade com nossa estratégia digital.',
   locale: 'pt-br',
-  primary_color: '#0ea5e9', // Importante para o Tailwind saber a cor base
-
+  primary_color: '#0ea5e9', // Sky 500
   hero: {
     title: 'Transforme Visitantes em Clientes',
-    highlight: 'Resultados',
+    highlight: 'Resultados Reais',
     description:
-      'Uma descrição focada na dor do cliente e como sua solução resolve isso de forma única.',
-    button: 'Agendar Demonstração',
+      'Nossa metodologia comprovada ajuda empresas a escalarem suas operações com previsibilidade e segurança.',
+    button: 'Agendar Consultoria',
     buttonLink: '#',
     image:
-      'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=80',
   },
-
   features: [
     {
-      title: 'Benefício Principal 1',
+      title: 'Estratégia Personalizada',
       description:
-        'Explicação de como esse recurso economiza tempo ou dinheiro.',
+        'Não acreditamos em receitas prontas. Criamos um plano único para o seu momento.',
       image:
         'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80',
-      imageAlt: 'Benefício 1',
+      imageAlt: 'Estratégia',
       reverse: false,
     },
     {
-      title: 'Benefício Principal 2',
+      title: 'Tecnologia de Ponta',
       description:
-        'Explicação de como esse recurso traz segurança ou eficiência.',
+        'Ferramentas modernas que garantem velocidade e estabilidade.',
       image:
-        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
-      imageAlt: 'Benefício 2',
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+      imageAlt: 'Tecnologia',
       reverse: true,
     },
   ],
-
-  // Nova seção para Prova Social (Essencial para High Converting)
   socialProof: {
-    title: 'Confiança de líderes de mercado',
-    logos: [], // IA pode preencher ou deixamos vazio
+    title: 'Confiança de grandes marcas',
+    logos: [],
   },
-
   cta: {
-    title: 'Pronto para escalar seus resultados?',
+    title: 'Pronto para o próximo nível?',
     subtitle:
-      'Junte-se a mais de 500 empresas que transformaram seus negócios.',
-    button: 'Falar com Consultor',
+      'Fale com nossos especialistas e descubra o potencial do seu negócio.',
+    button: 'Começar Agora',
     link: '#',
   },
-
   footer: {
-    company_name: 'Minha Empresa',
-    contacts: ['contato@empresa.com', '(11) 99999-9999'],
+    company_name: 'Agência Digital',
+    contacts: ['contato@agencia.com'],
   },
 };

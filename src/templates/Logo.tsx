@@ -9,27 +9,19 @@ const Logo = (props: ILogoProps) => {
   const siteName = config?.site_name || 'Landing Page';
 
   const fontStyle = props.xl
-    ? 'font-semibold text-3xl'
-    : 'font-semibold text-xl';
+    ? 'font-bold text-3xl tracking-tighter'
+    : 'font-bold text-xl tracking-tight';
 
   return (
     <span className={`inline-flex items-center text-gray-900 ${fontStyle}`}>
+      {/* Ícone geométrico minimalista (quadrado) */}
       <svg
-        className="mr-1 stroke-current text-primary-500"
-        xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        className="mr-3 size-5 text-primary-600"
         viewBox="0 0 24 24"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M0 0h24v24H0z" stroke="none" />
-        <rect x="3" y="12" width="6" height="8" rx="1" />
-        <rect x="9" y="8" width="6" height="12" rx="1" />
-        <rect x="15" y="4" width="6" height="16" rx="1" />
-        <path d="M4 20h14" />
+        <rect width="24" height="24" />
       </svg>
 
       {siteName}

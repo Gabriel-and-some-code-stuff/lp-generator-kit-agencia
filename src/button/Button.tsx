@@ -7,41 +7,15 @@ type IButtonProps = {
 
 const Button = (props: IButtonProps) => {
   const btnClass = className({
-    btn: true,
-    'btn-xl': props.xl,
-    'btn-base': !props.xl,
-    'btn-primary': true,
+    'inline-block text-center transition-all duration-200 border border-transparent cursor-pointer':
+      true,
+    'text-base py-3 px-6 font-bold uppercase tracking-widest': !props.xl,
+    'text-lg py-4 px-10 font-bold uppercase tracking-widest': props.xl,
+    'bg-gray-900 text-white hover:bg-white hover:text-gray-900 hover:border-gray-900':
+      true, // Efeito Invertido
   });
 
-  return (
-    <div className={btnClass}>
-      {props.children}
-
-      <style jsx>
-        {`
-          .btn {
-            @apply inline-block rounded-md text-center;
-          }
-
-          .btn-base {
-            @apply text-lg font-semibold py-2 px-4;
-          }
-
-          .btn-xl {
-            @apply font-extrabold text-xl py-4 px-6;
-          }
-
-          .btn-primary {
-            @apply text-white bg-primary-500;
-          }
-
-          .btn-primary:hover {
-            @apply bg-primary-600;
-          }
-        `}
-      </style>
-    </div>
-  );
+  return <div className={btnClass}>{props.children}</div>;
 };
 
 export { Button };

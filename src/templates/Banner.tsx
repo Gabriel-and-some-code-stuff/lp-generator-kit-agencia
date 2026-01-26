@@ -9,26 +9,22 @@ const Banner = () => {
 
   return (
     <Section>
-      <div className="relative overflow-hidden rounded-3xl bg-gray-900 p-12 text-center shadow-2xl sm:text-left">
-        {/* Background Pattern */}
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 size-64 rounded-full bg-primary-500 opacity-20 blur-3xl"></div>
+      <div className="bg-black p-16 text-center text-white md:p-24">
+        <div className="swiss-label mb-8 text-gray-400">Conclusão — 03</div>
 
-        <div className="relative z-10 flex flex-col items-center justify-between gap-8 sm:flex-row">
-          <div className="max-w-2xl text-white">
-            <h2 className="text-3xl font-bold">{cta.title || 'Título CTA'}</h2>
-            <p className="mt-4 text-lg text-gray-300">
-              {cta.subtitle || 'Subtítulo CTA'}
-            </p>
-          </div>
+        <h2 className="mx-auto mb-8 max-w-4xl text-4xl font-bold leading-none tracking-tighter md:text-6xl">
+          {cta.title || 'Pronto para começar?'}
+        </h2>
 
-          <div className="whitespace-no-wrap">
-            <Link href={cta.link || '#'}>
-              <div className="inline-block cursor-pointer rounded-full bg-white px-8 py-4 text-lg font-bold text-gray-900 shadow-lg transition-colors hover:bg-gray-100">
-                {cta.button || 'Clique Aqui'}
-              </div>
-            </Link>
+        <p className="mx-auto mb-12 max-w-xl text-xl font-light text-gray-400">
+          {cta.subtitle || 'Entre em contato.'}
+        </p>
+
+        <Link href={cta.link || '#'}>
+          <div className="inline-block cursor-pointer border border-white px-12 py-4 text-lg font-bold uppercase tracking-widest transition-colors duration-300 hover:bg-white hover:text-black">
+            {cta.button || 'Iniciar'}
           </div>
-        </div>
+        </Link>
       </div>
     </Section>
   );
