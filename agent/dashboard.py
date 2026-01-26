@@ -3,12 +3,20 @@ import pandas as pd
 import os
 import sys
 
-# Corrige imports
+# --- CORREÇÃO DE PATH ---
+# Garante que o python encontre o arquivo no mesmo diretório
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 try:
-    from agent_v1_robusto import run_agent, MODELO
-except ImportError:
-    st.error("Erro: agent_v1_robusto.py não encontrado.")
+    # CORREÇÃO: Importamos APENAS a função. Removemos 'MODELO' que não existe mais.
+    from agent_v1_robusto import processar_cliente as run_agent
+    
+    # Definimos o nome manualmente para a interface, já que agora é fixo no LM Studio
+    MODELO = "LM Studio (Server Local)" 
+    
+except ImportError as e:
+    st.error(f"Erro de Importação: {e}")
+    st.info("Verifique se 'agent_v1_robusto.py' está na pasta 'agent'.")
     st.stop()
 
 st.set_page_config(page_title="Agência LP Generator Pro", page_icon="⚡", layout="wide")
@@ -20,14 +28,12 @@ with st.sidebar:
     st.header("Configurações")
     modo_deploy = st.checkbox("Ativar Deploy (Vercel)", value=False)
     if modo_deploy:
-        st.warning("⚠️ Deploy ativo. Cada site levará ~3 min.")
-    
+        st.warning("⚠️ Deploy ativo. Processo mais lento.")
     st.divider()
-    st.info("💡 Dica: Use o arquivo clientes.csv para processar em massa.")
+    st.info("💡 Dica: Use o CSV para processar em massa.")
 
-# --- INTERFACE ---
-
-tab_lote, tab_unico = st.tabs(["🚀 Processamento em Lote", "🎯 Teste Único"])
+# --- TABS ---
+tab_lote, tab_unico = st.tabs(["🚀 Lote (CSV)", "🎯 Teste Único"])
 
 with tab_lote:
     uploaded = st.file_uploader("Upload clientes.csv", type=["csv"])
@@ -35,7 +41,7 @@ with tab_lote:
         df = pd.read_csv(uploaded)
         st.dataframe(df.head())
         
-        if st.button("Iniciar Fila de Produção", type="primary"):
+        if st.button("Iniciar Fila", type="primary"):
             progress = st.progress(0)
             log_box = st.empty()
             results = []
@@ -47,20 +53,23 @@ with tab_lote:
                 
                 log_box.info(f"🔄 Processando {i+1}/{len(df)}: {nome}")
                 
-                # CHAMA O AGENTE PRO
-                res = run_agent(nome, url, obj, modo_deploy)
-                
-                status_icon = "✅" if res['status'] == 'success' else "❌"
-                results.append({
-                    "Cliente": nome,
-                    "Status": status_icon,
-                    "Nova LP": res.get('url', '-'),
-                    "Msg WhatsApp": res.get('whatsapp', '-')
-                })
+                try:
+                    # Executa o agente
+                    res = run_agent(nome, url, obj, modo_deploy=modo_deploy)
+                    
+                    status = "✅" if res['status'] == 'success' else "❌"
+                    results.append({
+                        "Cliente": nome,
+                        "Status": status,
+                        "URL": res.get('url', '-'),
+                        "WhatsApp": res.get('whatsapp', '-')
+                    })
+                except Exception as e:
+                    results.append({"Cliente": nome, "Status": "❌ ERRO", "URL": str(e)})
                 
                 progress.progress((i + 1) / len(df))
             
-            st.success("Fila Finalizada!")
+            st.success("Concluído!")
             st.dataframe(pd.DataFrame(results))
             
             # Botão Download
@@ -70,16 +79,34 @@ with tab_lote:
 with tab_unico:
     c1, c2 = st.columns(2)
     nome = c1.text_input("Nome Cliente")
-    url = c2.text_input("Site Atual")
+    url = c2.text_input("Site Atual (URL)")
     obj = st.text_area("Objetivo", "Autoridade e Vendas")
     
-    if st.button("Gerar LP Teste"):
-        with st.status("Trabalhando...") as s:
-            res = run_agent(nome, url, obj, modo_deploy)
-            if res['status'] == 'success':
-                s.update(label="Sucesso!", state="complete")
-                st.success(f"Link: {res['url']}")
-                st.code(res['whatsapp'])
-            else:
-                s.update(label="Erro", state="error")
-                st.error(res['msg'])
+    if st.button("Gerar LP"):
+        if not nome or not url:
+            st.warning("Preencha os campos.")
+        else:
+            with st.status("Agente trabalhando...") as s:
+                try:
+                    # Executa o agente
+                    res = run_agent(nome, url, obj, modo_deploy=modo_deploy)
+                    
+                    if res['status'] == 'success':
+                        s.update(label="Sucesso!", state="complete")
+                        st.success(f"Link: {res['url']}")
+                        st.code(res['whatsapp'])
+                        
+                        # Mostra logs de forma organizada
+                        with st.expander("Ver Logs Detalhados"):
+                            for linha in res.get('log', []):
+                                st.text(linha)
+                    else:
+                        s.update(label="Erro", state="error")
+                        st.error(res.get('msg', 'Erro desconhecido'))
+                        with st.expander("Ver Detalhes do Erro"):
+                             for linha in res.get('log', []):
+                                st.text(linha)
+                                
+                except Exception as e:
+                    s.update(label="Erro Crítico", state="error")
+                    st.error(str(e))

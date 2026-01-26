@@ -21,7 +21,7 @@ module.exports = {
           200: '#C0EAFC',
           300: '#9ADDFB',
           400: '#4FC3F7',
-          500: '#0ea5e9', // Azul Padrão (Cyan)
+          500: '#0ea5e9', // COR GERADA PELA IA
           600: '#0398DC',
           700: '#026592',
           800: '#014C6E',
