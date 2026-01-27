@@ -3,34 +3,52 @@ import { AppConfig } from '../utils/AppConfig';
 
 const Sponsors = () => {
   const config = AppConfig as any;
-  const siteName = config?.site_name || 'Empresa';
+  // Fallback seguro se não houver logotipos definidos
+  const logos = config?.socialProof?.logos || [];
 
   return (
-    <Section yPadding="py-12" className="border-y border-gray-100">
-      <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-        <div className="min-w-[200px] text-sm font-semibold uppercase tracking-widest text-gray-400">
-          Confiado por líderes
-        </div>
+    <div className="border-b border-gray-100 bg-white">
+      <Section yPadding="py-10">
+        <div className="flex flex-col items-center gap-6 lg:flex-row lg:justify-between">
+          <div className="text-center lg:text-left">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+              Confiado por grandes empresas
+            </p>
+          </div>
 
-        <div className="flex w-full flex-wrap justify-center gap-8 opacity-60 transition-opacity duration-500 hover:opacity-100 md:justify-end md:gap-16">
-          {/* Placeholder logos estilizados com tipografia. 
-            Em um cenário real, seriam SVGs monocromáticos.
-          */}
-          <span className="text-xl font-bold tracking-tighter text-gray-300">
-            GLOBAL CORP
-          </span>
-          <span className="text-xl font-bold tracking-tighter text-gray-300">
-            NEXUS
-          </span>
-          <span className="text-xl font-bold tracking-tighter text-gray-300">
-            STRATOS
-          </span>
-          <span className="text-xl font-bold uppercase tracking-tighter text-gray-300">
-            {siteName}
-          </span>
+          {/* Área de Logos ou Stats (adaptável) */}
+          <div className="flex flex-wrap justify-center gap-8 lg:justify-end lg:gap-12">
+            {logos.length > 0 ? (
+              logos.map((logoUrl: string, index: number) => (
+                <img
+                  key={index}
+                  src={logoUrl}
+                  alt={`Partner ${index}`}
+                  className="h-8 w-auto opacity-40 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
+                />
+              ))
+            ) : (
+              // Placeholder estilizado se não houver logos no config
+              <>
+                {[
+                  'Global Corp',
+                  'Nexus Finance',
+                  'Stratos Tech',
+                  'Acme Co',
+                ].map((name, i) => (
+                  <span
+                    key={i}
+                    className="text-xl font-bold text-gray-300 grayscale hover:text-gray-500"
+                  >
+                    {name}
+                  </span>
+                ))}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </Section>
+      </Section>
+    </div>
   );
 };
 

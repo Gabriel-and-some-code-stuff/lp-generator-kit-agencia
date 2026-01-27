@@ -8,22 +8,23 @@ import { VerticalFeatures } from './VerticalFeatures';
 
 const Base = () => {
   const config = AppConfig as any;
-  const title = config?.title || 'Landing Page';
-  const description = config?.description || 'Descrição do site.';
+  const title = config?.title || 'Qualitas Payroll Services';
+  const description = config?.description || 'Professional Payroll Services.';
 
   return (
-    <div className="bg-white text-gray-900 antialiased selection:bg-black selection:text-white">
+    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
       <Meta title={title} description={description} />
 
-      {/* Container principal com max-width controlado para leitura confortável */}
-      <main className="w-full">
-        <Hero />
-        <div className="swiss-divider my-12" /> {/* Linha divisória sutil */}
-        <Sponsors />
-        <div className="swiss-divider my-12" />
-        <VerticalFeatures />
-        <Banner />
-      </main>
+      <Hero />
+
+      {/* Barra de confiança logo após o Hero para autoridade imediata */}
+      <Sponsors />
+
+      {/* Seção principal de serviços em Grid */}
+      <VerticalFeatures />
+
+      {/* CTA Final */}
+      <Banner />
 
       <Footer />
     </div>

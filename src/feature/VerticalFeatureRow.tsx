@@ -1,4 +1,3 @@
-import className from 'classnames';
 import { useRouter } from 'next/router';
 
 type IVerticalFeatureRowProps = {
@@ -6,8 +5,7 @@ type IVerticalFeatureRowProps = {
   description: string;
   image: string;
   imageAlt: string;
-  reverse?: boolean;
-  index?: number; // Adicionado para numeração
+  reverse?: boolean; // Mantido para compatibilidade, mas usado para variação de estilo
 };
 
 const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
@@ -15,47 +13,49 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
   const safeImage = props.image || '';
   const imagePath = safeImage.startsWith('http')
     ? safeImage
-    : `${router.basePath}${safeImage || '/assets/images/feature.svg'}`;
+    : `${router.basePath}${safeImage}`;
 
-  // Formata número (01, 02...)
-  const number = props.index ? props.index.toString().padStart(2, '0') : '00';
-
+  // Design transformado em CARD (Estilo Grid) ao invés de linha
   return (
-    <div
-      className={className(
-        'grid grid-cols-1 md:grid-cols-2 gap-12 items-center border-t border-gray-100 pt-12',
-        {
-          '': props.reverse,
-        },
-      )}
-    >
-      <div
-        className={className('order-2 md:order-1', {
-          'md:order-2': props.reverse,
-        })}
-      >
-        <span className="mb-4 block font-mono text-xs text-gray-400">
-          ({number})
-        </span>
-        <h3 className="mb-6 text-3xl font-bold tracking-tight text-gray-900">
-          {props.title}
-        </h3>
-        <p className="max-w-md text-lg leading-relaxed text-gray-600">
-          {props.description}
-        </p>
-      </div>
-
-      <div
-        className={className(
-          'order-1 md:order-2 relative aspect-video bg-gray-50',
-          { 'md:order-1': props.reverse },
-        )}
-      >
+    <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-100 hover:shadow-xl hover:shadow-primary-900/5">
+      {/* Área da Imagem/Ícone */}
+      <div className="relative h-48 w-full overflow-hidden bg-gray-50">
         <img
           src={imagePath}
           alt={props.imageAlt}
-          className="size-full object-cover grayscale transition-all duration-500 hover:grayscale-0"
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        {/* Overlay sutil */}
+        <div className="absolute inset-0 bg-primary-900/0 transition-colors group-hover:bg-primary-900/5" />
+      </div>
+
+      {/* Conteúdo do Card */}
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="mb-3 text-xl font-bold text-gray-900 group-hover:text-primary-600">
+          {props.title}
+        </h3>
+        <p className="flex-1 text-sm leading-relaxed text-gray-600">
+          {props.description}
+        </p>
+
+        <div className="mt-6">
+          <span className="inline-flex items-center text-sm font-bold text-primary-600 group-hover:underline">
+            Saiba mais
+            <svg
+              className="ml-2 size-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
     </div>
   );

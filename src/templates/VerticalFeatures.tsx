@@ -4,39 +4,18 @@ import { AppConfig } from '../utils/AppConfig';
 
 const VerticalFeatures = () => {
   const config = AppConfig as any;
-
-  const sectionTitle = config?.featuresTitle || 'Nossas Soluções';
-  const sectionDesc =
-    config?.featuresDescription || 'O que oferecemos de melhor para você.';
-
-  const featuresList =
-    config?.features && Array.isArray(config.features)
-      ? config.features
-      : [
-          {
-            title: 'Serviço de Qualidade',
-            description: 'Descrição do serviço oferecido pela empresa.',
-            image: '/assets/images/feature.svg',
-            imageAlt: 'Feature 1',
-            reverse: false,
-          },
-        ];
+  const featuresList = config?.features || [];
 
   return (
-    <Section title={sectionTitle} description={sectionDesc}>
-      <div className="flex flex-col gap-y-24">
-        {' '}
-        {/* Espaçamento vertical generoso */}
+    <Section
+      title="Nossos Serviços Especializados"
+      description="Soluções completas e adaptáveis para simplificar a gestão do seu negócio."
+      yPadding="py-20 bg-white"
+    >
+      {/* Transformando a lista em um Grid estilo Cards (Padrão Qualitas) */}
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {featuresList.map((feature: any, index: number) => (
-          <VerticalFeatureRow
-            key={index}
-            title={feature.title || 'Título Indefinido'}
-            description={feature.description || 'Sem descrição.'}
-            image={feature.image || '/assets/images/feature.svg'}
-            imageAlt={feature.imageAlt || 'Imagem'}
-            reverse={feature.reverse}
-            index={index + 1} // Passa índice para numeração suíça
-          />
+          <VerticalFeatureRow key={index} {...feature} index={index} />
         ))}
       </div>
     </Section>

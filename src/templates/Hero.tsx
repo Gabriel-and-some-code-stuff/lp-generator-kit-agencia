@@ -11,52 +11,102 @@ const Hero = () => {
   const hero = config?.hero || {};
 
   return (
-    <Background color="bg-white">
-      <Section yPadding="py-8">
+    <Background color="bg-white relative">
+      {/* Navbar Overlay */}
+      <Section yPadding="py-6">
         <NavbarTwoColumns logo={<Logo xl />}>
           <li>
             <Link
               href="/"
-              className="text-sm font-medium transition-colors hover:text-gray-600"
+              className="text-sm font-semibold text-gray-700 transition-colors hover:text-primary-600"
             >
-              INÍCIO
+              HOME
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/about"
+              className="text-sm font-semibold text-gray-700 transition-colors hover:text-primary-600"
+            >
+              SOBRE NÓS
             </Link>
           </li>
           <li>
             <Link
               href={hero.buttonLink || '#'}
-              className="border-b-2 border-black pb-1 text-sm font-bold transition-all hover:border-gray-400"
+              className="rounded-md bg-primary-600 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg"
             >
-              {hero.button || 'CONTATO'} ↗
+              {hero.button || 'SOLICITAR COTAÇÃO'}
             </Link>
           </li>
         </NavbarTwoColumns>
       </Section>
 
-      <Section yPadding="pt-24 pb-32">
-        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
-          {/* Coluna de Texto (Dominante) */}
-          <div className="flex flex-col justify-center lg:col-span-8">
-            {/* Label estilo "Ficha Técnica" */}
-            <div className="swiss-label mb-6">
-              {hero.highlight || 'DESTAQUE'} — 01
+      {/* Hero Content - Estilo Corporativo Dividido */}
+      <div className="relative overflow-hidden bg-gray-50 pb-24 pt-16 lg:pt-32">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+            {/* Coluna Texto */}
+            <div className="relative z-10">
+              {hero.highlight && (
+                <div className="mb-6 inline-block rounded-full bg-primary-100 px-4 py-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-primary-700">
+                    {hero.highlight}
+                  </span>
+                </div>
+              )}
+
+              <h1 className="mb-6 text-4xl font-extrabold leading-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                {hero.title}
+              </h1>
+
+              <p className="mb-8 text-lg leading-relaxed text-gray-600 sm:text-xl">
+                {hero.description}
+              </p>
+
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Link href={hero.buttonLink || '#'}>
+                  <div className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary-600 px-8 py-4 text-base font-bold text-white transition-all hover:bg-primary-700 hover:shadow-lg">
+                    {hero.button || 'Começar Agora'}
+                  </div>
+                </Link>
+                <Link href="/services">
+                  <div className="inline-flex cursor-pointer items-center justify-center rounded-lg border-2 border-gray-200 bg-transparent px-8 py-4 text-base font-bold text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50">
+                    Nossos Serviços
+                  </div>
+                </Link>
+              </div>
+
+              {/* Trust Indicator simples */}
+              <div className="mt-10 flex items-center gap-4 text-sm font-medium text-gray-500">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="size-8 rounded-full border-2 border-white bg-gray-300"
+                    />
+                  ))}
+                </div>
+                <p>Junte-se a mais de 15.000 clientes satisfeitos.</p>
+              </div>
             </div>
 
-            <h1 className="sm:text-7xl lg:text-8xl mb-10 text-6xl font-bold leading-[0.95] tracking-tighter text-black">
-              {hero.title || 'Título Principal'}
-            </h1>
+            {/* Coluna Imagem - Estilo Card Flutuante */}
+            <div className="relative lg:ml-10">
+              <div className="relative rounded-2xl bg-white p-2 shadow-2xl shadow-primary-900/10">
+                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-gray-200">
+                  <img
+                    src={hero.image}
+                    alt="Hero"
+                    className="size-full object-cover"
+                  />
+                </div>
 
-            <div className="grid max-w-2xl grid-cols-1 gap-8 border-t border-gray-200 pt-8 sm:grid-cols-2">
-              <p className="text-lg leading-relaxed text-gray-600">
-                {hero.description ||
-                  'Descrição focada na solução racional do problema.'}
-              </p>
-              <div className="flex items-start">
-                <Link href={hero.buttonLink || '#'}>
-                  <div className="group cursor-pointer">
-                    <div className="flex size-16 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 group-hover:scale-110">
+                {/* Floating Badge (Estilo Qualitas 'Accuracy') */}
+                <div className="absolute -bottom-6 -left-6 hidden rounded-lg bg-white p-6 shadow-xl lg:block">
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-12 items-center justify-center rounded-full bg-green-100 text-green-600">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
                         className="size-6"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -66,40 +116,28 @@ const Hero = () => {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                          d="M5 13l4 4L19 7"
                         />
                       </svg>
                     </div>
-                    <span className="mt-3 block text-sm font-bold uppercase tracking-wide group-hover:underline">
-                      {hero.button || 'Ver Soluções'}
-                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">
+                        99.9% Precisão
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Garantia de conformidade
+                      </p>
+                    </div>
                   </div>
-                </Link>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Coluna de Imagem (Funcional) */}
-          <div className="relative mt-12 lg:col-span-4 lg:mt-0">
-            {/* Aspect Ratio vertical, estilo editorial */}
-            <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-              <img
-                src={
-                  hero.image ||
-                  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'
-                }
-                alt="Hero"
-                className="size-full object-cover grayscale transition-all duration-700 ease-out hover:grayscale-0"
-              />
-            </div>
-            {/* Caption estilo museu */}
-            <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase text-gray-400">
-              <span>Fig. 01</span>
-              <span>Visualização do Conceito</span>
+              {/* Decorative Blob */}
+              <div className="absolute -right-12 -top-12 -z-10 size-64 rounded-full bg-primary-100 opacity-50 blur-3xl" />
             </div>
           </div>
         </div>
-      </Section>
+      </div>
     </Background>
   );
 };

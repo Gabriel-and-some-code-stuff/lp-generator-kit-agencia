@@ -17,15 +17,15 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          100: '#FEE6E0',
-          200: '#FDC5B8',
-          300: '#FBA38F',
-          400: '#F8623F',
-          500: '#E6391A', // COR PRIMÁRIA LAUZANE (TERRACOTA MODERNO)
-          600: '#B82D15',
-          700: '#8A2210',
-          800: '#5C170B',
-          900: '#2E0B05',
+          100: '#E6F6FE',
+          200: '#C0EAFC',
+          300: '#9ADDFB',
+          400: '#4FC3F7',
+          500: '#0ea5e9', // COR PADRÃO (SKY BLUE)
+          600: '#0398DC',
+          700: '#026592',
+          800: '#014C6E',
+          900: '#013349',
         },
         gray: {
           100: '#f7fafc',
