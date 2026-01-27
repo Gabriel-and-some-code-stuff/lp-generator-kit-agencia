@@ -8,24 +8,18 @@ import { VerticalFeatures } from './VerticalFeatures';
 
 const Base = () => {
   const config = AppConfig as any;
-  const title = config?.title || 'Qualitas Payroll Services';
-  const description = config?.description || 'Professional Payroll Services.';
+  const title = config?.title || 'Qualitas Style Landing';
+  const description = config?.description || 'Professional Business Solutions';
 
   return (
-    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
+    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased selection:bg-primary-100 selection:text-primary-900">
       <Meta title={title} description={description} />
 
+      {/* Sections stacked with clear vertical rhythm */}
       <Hero />
-
-      {/* Barra de confiança logo após o Hero para autoridade imediata */}
       <Sponsors />
-
-      {/* Seção principal de serviços em Grid */}
       <VerticalFeatures />
-
-      {/* CTA Final */}
       <Banner />
-
       <Footer />
     </div>
   );

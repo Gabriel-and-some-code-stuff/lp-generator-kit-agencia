@@ -5,24 +5,27 @@ type ISectionProps = {
   description?: string;
   yPadding?: string;
   children: ReactNode;
-  className?: string; // Adicionado para flexibilidade
+  className?: string;
 };
 
 const Section = (props: ISectionProps) => (
   <div
-    className={`mx-auto max-w-screen-xl px-4 sm:px-6 ${
-      props.yPadding ? props.yPadding : 'py-16'
+    className={`mx-auto max-w-screen-xl px-6 sm:px-8 ${
+      props.yPadding ? props.yPadding : 'py-20 md:py-28'
     } ${props.className || ''}`}
   >
     {(props.title || props.description) && (
-      <div className="mb-16 max-w-3xl md:mb-24">
+      <div className="mb-16 max-w-3xl md:mb-20">
         {props.title && (
-          <h2 className="mb-6 text-4xl font-bold tracking-tighter text-gray-900 md:text-5xl">
-            {props.title}
-          </h2>
+          <div className="mb-6">
+            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl md:text-5xl">
+              {props.title}
+            </h2>
+            <div className="mt-4 h-1.5 w-24 rounded-full bg-primary-500" />
+          </div>
         )}
         {props.description && (
-          <div className="border-l-2 border-gray-200 pl-6 text-xl leading-relaxed text-gray-500">
+          <div className="text-xl leading-relaxed text-gray-500">
             {props.description}
           </div>
         )}

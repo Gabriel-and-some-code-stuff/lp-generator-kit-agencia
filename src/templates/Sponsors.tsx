@@ -3,48 +3,34 @@ import { AppConfig } from '../utils/AppConfig';
 
 const Sponsors = () => {
   const config = AppConfig as any;
-  // Fallback seguro se não houver logotipos definidos
-  const logos = config?.socialProof?.logos || [];
+  const socialProof = config?.socialProof;
+  const logos = socialProof?.logos || [];
+
+  // STRICT CONDITIONAL RENDERING
+  // If no logos are present, or explicit signal to hide, do not render.
+  if (!logos || logos.length === 0) {
+    return null;
+  }
 
   return (
     <div className="border-b border-gray-100 bg-white">
-      <Section yPadding="py-10">
-        <div className="flex flex-col items-center gap-6 lg:flex-row lg:justify-between">
-          <div className="text-center lg:text-left">
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-              Confiado por grandes empresas
+      <Section yPadding="py-10 md:py-12">
+        <div className="flex flex-col items-center justify-center gap-8 lg:flex-row lg:justify-between">
+          {socialProof?.title && (
+            <p className="text-sm font-bold uppercase tracking-widest text-gray-400">
+              {socialProof.title}
             </p>
-          </div>
+          )}
 
-          {/* Área de Logos ou Stats (adaptável) */}
-          <div className="flex flex-wrap justify-center gap-8 lg:justify-end lg:gap-12">
-            {logos.length > 0 ? (
-              logos.map((logoUrl: string, index: number) => (
-                <img
-                  key={index}
-                  src={logoUrl}
-                  alt={`Partner ${index}`}
-                  className="h-8 w-auto opacity-40 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
-                />
-              ))
-            ) : (
-              // Placeholder estilizado se não houver logos no config
-              <>
-                {[
-                  'Global Corp',
-                  'Nexus Finance',
-                  'Stratos Tech',
-                  'Acme Co',
-                ].map((name, i) => (
-                  <span
-                    key={i}
-                    className="text-xl font-bold text-gray-300 grayscale hover:text-gray-500"
-                  >
-                    {name}
-                  </span>
-                ))}
-              </>
-            )}
+          <div className="flex flex-wrap justify-center gap-x-12 gap-y-8 opacity-60 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
+            {logos.map((logoUrl: string, index: number) => (
+              <img
+                key={index}
+                src={logoUrl}
+                alt={`Partner ${index + 1}`}
+                className="h-8 w-auto object-contain md:h-10"
+              />
+            ))}
           </div>
         </div>
       </Section>

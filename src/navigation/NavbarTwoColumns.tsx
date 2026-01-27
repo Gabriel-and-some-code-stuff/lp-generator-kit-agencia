@@ -9,18 +9,23 @@ type INavbarProps = {
 const NavbarTwoColumns = (props: INavbarProps) => (
   <div className="flex w-full flex-wrap items-center justify-between">
     <div className="flex items-center">
-      <Link href="/">{props.logo}</Link>
+      <Link
+        href="/"
+        className="transition-opacity duration-200 hover:opacity-80"
+      >
+        {props.logo}
+      </Link>
     </div>
 
     <nav className="hidden md:block">
-      <ul className="flex items-center gap-8 font-medium text-gray-700">
+      <ul className="flex items-center gap-8 font-bold text-gray-800">
         {props.children}
       </ul>
     </nav>
 
-    {/* Menu Mobile Simplificado (placeholder) */}
+    {/* Mobile Navigation Toggle (Placeholder for future implementation) */}
     <div className="block md:hidden">
-      <button className="text-gray-600 focus:outline-none">
+      <button className="rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500">
         <svg
           className="size-6"
           fill="none"

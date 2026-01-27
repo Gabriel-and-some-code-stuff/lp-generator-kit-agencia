@@ -7,28 +7,32 @@ const Banner = () => {
   const config = AppConfig as any;
   const cta = config?.cta || {};
 
-  return (
-    <Section className="my-16">
-      <div className="relative overflow-hidden rounded-2xl bg-primary-900 px-8 py-16 text-center shadow-2xl md:px-12 md:py-20 lg:px-20 lg:text-left">
-        {/* Decorative Background Elements */}
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 size-80 rounded-full bg-primary-800 opacity-50 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 size-80 rounded-full bg-primary-700 opacity-30 blur-3xl"></div>
+  // If no CTA data is present, do not render this section (Conditional Rendering)
+  if (!cta.title && !cta.button) {
+    return null;
+  }
 
-        <div className="relative z-10 flex flex-col items-center justify-between gap-8 lg:flex-row">
+  return (
+    <Section yPadding="py-24">
+      <div className="relative overflow-hidden rounded-2xl bg-gray-900 px-8 py-16 text-center shadow-2xl shadow-gray-900/20 md:px-16 md:py-20 lg:text-left">
+        {/* Abstract Pattern Background */}
+        <div className="absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-primary-500 opacity-10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 size-64 rounded-full bg-primary-500 opacity-10 blur-3xl" />
+
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center justify-between gap-10 lg:flex-row">
           <div className="max-w-2xl">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
-              {cta.title || 'Pronto para otimizar sua folha de pagamento?'}
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              {cta.title || 'Ready to improve your business?'}
             </h2>
-            <p className="text-lg text-primary-100 opacity-90">
-              {cta.subtitle ||
-                'Entre em contato hoje e descubra como podemos ajudar sua empresa.'}
+            <p className="text-lg leading-relaxed text-gray-300 opacity-90">
+              {cta.subtitle || 'Join hundreds of satisfied clients today.'}
             </p>
           </div>
 
           <div className="flex shrink-0 flex-col gap-4 sm:flex-row">
             <Link href={cta.link || '#'}>
-              <div className="inline-block cursor-pointer rounded-lg bg-white px-8 py-4 text-center text-base font-bold uppercase tracking-wide text-primary-900 transition-colors hover:bg-gray-50 hover:shadow-lg">
-                {cta.button || 'Fale Conosco'}
+              <div className="inline-block cursor-pointer rounded-md bg-white px-10 py-4 text-center text-lg font-bold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg">
+                {cta.button || 'Contact Us'}
               </div>
             </Link>
           </div>

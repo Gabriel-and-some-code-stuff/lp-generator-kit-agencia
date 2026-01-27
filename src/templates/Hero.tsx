@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { Background } from '../background/Background';
+import { Button } from '../button/Button';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { AppConfig } from '../utils/AppConfig';
@@ -11,133 +12,90 @@ const Hero = () => {
   const hero = config?.hero || {};
 
   return (
-    <Background color="bg-white relative">
-      {/* Navbar Overlay */}
+    <Background color="bg-white">
+      {/* Navigation Layer */}
       <Section yPadding="py-6">
         <NavbarTwoColumns logo={<Logo xl />}>
           <li>
             <Link
               href="/"
-              className="text-sm font-semibold text-gray-700 transition-colors hover:text-primary-600"
+              className="text-base font-semibold text-gray-700 transition-colors hover:text-primary-600"
             >
-              HOME
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/about"
-              className="text-sm font-semibold text-gray-700 transition-colors hover:text-primary-600"
-            >
-              SOBRE NÓS
+              Home
             </Link>
           </li>
           <li>
             <Link
               href={hero.buttonLink || '#'}
-              className="rounded-md bg-primary-600 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg"
+              className="text-base font-semibold text-gray-700 transition-colors hover:text-primary-600"
             >
-              {hero.button || 'SOLICITAR COTAÇÃO'}
+              Services
+            </Link>
+          </li>
+          <li>
+            {/* Primary Action in Navbar */}
+            <Link href={hero.buttonLink || '#'}>
+              <div className="cursor-pointer rounded-md bg-primary-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary-600 hover:shadow-md">
+                Get Started
+              </div>
             </Link>
           </li>
         </NavbarTwoColumns>
       </Section>
 
-      {/* Hero Content - Estilo Corporativo Dividido */}
-      <div className="relative overflow-hidden bg-gray-50 pb-24 pt-16 lg:pt-32">
-        <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-            {/* Coluna Texto */}
-            <div className="relative z-10">
-              {hero.highlight && (
-                <div className="mb-6 inline-block rounded-full bg-primary-100 px-4 py-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary-700">
-                    {hero.highlight}
-                  </span>
-                </div>
-              )}
-
-              <h1 className="mb-6 text-4xl font-extrabold leading-tight text-gray-900 sm:text-5xl lg:text-6xl">
-                {hero.title}
-              </h1>
-
-              <p className="mb-8 text-lg leading-relaxed text-gray-600 sm:text-xl">
-                {hero.description}
-              </p>
-
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Link href={hero.buttonLink || '#'}>
-                  <div className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary-600 px-8 py-4 text-base font-bold text-white transition-all hover:bg-primary-700 hover:shadow-lg">
-                    {hero.button || 'Começar Agora'}
-                  </div>
-                </Link>
-                <Link href="/services">
-                  <div className="inline-flex cursor-pointer items-center justify-center rounded-lg border-2 border-gray-200 bg-transparent px-8 py-4 text-base font-bold text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50">
-                    Nossos Serviços
-                  </div>
-                </Link>
+      {/* Hero Content Layer */}
+      <Section yPadding="pt-16 pb-20 md:pt-28 md:pb-32">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Text Column */}
+          <div className="max-w-2xl">
+            {hero.highlight && (
+              <div className="bg-primary-50 mb-6 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-wider text-primary-700 ring-1 ring-primary-100">
+                {hero.highlight}
               </div>
+            )}
 
-              {/* Trust Indicator simples */}
-              <div className="mt-10 flex items-center gap-4 text-sm font-medium text-gray-500">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="size-8 rounded-full border-2 border-white bg-gray-300"
-                    />
-                  ))}
+            <h1 className="mb-6 text-5xl font-extrabold leading-tight tracking-tight text-gray-900 md:text-6xl">
+              {hero.title}
+            </h1>
+
+            <p className="mb-8 text-xl leading-relaxed text-gray-600">
+              {hero.description}
+            </p>
+
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <Link href={hero.buttonLink || '#'}>
+                <Button xl>{hero.button || 'Learn More'}</Button>
+              </Link>
+
+              {/* Secondary Button Style */}
+              <Link href="#">
+                <div className="flex cursor-pointer items-center justify-center rounded-md border-2 border-gray-200 bg-transparent px-8 py-3.5 text-lg font-bold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50">
+                  Contact Support
                 </div>
-                <p>Junte-se a mais de 15.000 clientes satisfeitos.</p>
-              </div>
+              </Link>
             </div>
+          </div>
 
-            {/* Coluna Imagem - Estilo Card Flutuante */}
-            <div className="relative lg:ml-10">
-              <div className="relative rounded-2xl bg-white p-2 shadow-2xl shadow-primary-900/10">
-                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-gray-200">
+          {/* Image Column */}
+          <div className="relative mx-auto w-full lg:max-w-none">
+            <div className="relative overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-900/5 transition-transform duration-500 hover:scale-[1.01]">
+              <div className="aspect-[4/3] w-full">
+                {hero.image ? (
                   <img
                     src={hero.image}
-                    alt="Hero"
+                    alt={hero.title}
                     className="size-full object-cover"
                   />
-                </div>
-
-                {/* Floating Badge (Estilo Qualitas 'Accuracy') */}
-                <div className="absolute -bottom-6 -left-6 hidden rounded-lg bg-white p-6 shadow-xl lg:block">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-12 items-center justify-center rounded-full bg-green-100 text-green-600">
-                      <svg
-                        className="size-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">
-                        99.9% Precisão
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Garantia de conformidade
-                      </p>
-                    </div>
+                ) : (
+                  <div className="flex size-full items-center justify-center bg-gray-100 text-gray-400">
+                    Image Placeholder
                   </div>
-                </div>
+                )}
               </div>
-
-              {/* Decorative Blob */}
-              <div className="absolute -right-12 -top-12 -z-10 size-64 rounded-full bg-primary-100 opacity-50 blur-3xl" />
             </div>
           </div>
         </div>
-      </div>
+      </Section>
     </Background>
   );
 };

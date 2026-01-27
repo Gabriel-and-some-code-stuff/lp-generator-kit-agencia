@@ -7,12 +7,11 @@ type IButtonProps = {
 
 const Button = (props: IButtonProps) => {
   const btnClass = className({
-    'inline-block text-center transition-all duration-200 border border-transparent cursor-pointer':
+    'inline-block rounded-md text-center font-bold tracking-wide transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus:ring-4 focus:ring-primary-200':
       true,
-    'text-base py-3 px-6 font-bold uppercase tracking-widest': !props.xl,
-    'text-lg py-4 px-10 font-bold uppercase tracking-widest': props.xl,
-    'bg-gray-900 text-white hover:bg-white hover:text-gray-900 hover:border-gray-900':
-      true, // Efeito Invertido
+    'py-3 px-6 text-sm': !props.xl,
+    'py-4 px-10 text-lg': props.xl,
+    'bg-primary-500 text-white hover:bg-primary-600': true, // Enforce primary color
   });
 
   return <div className={btnClass}>{props.children}</div>;

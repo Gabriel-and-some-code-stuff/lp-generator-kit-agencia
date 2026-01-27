@@ -6,35 +6,31 @@ import { Logo } from './Logo';
 
 const Footer = () => {
   const config = AppConfig as any;
-  const contacts =
-    config?.footer?.contacts && Array.isArray(config.footer.contacts)
-      ? config.footer.contacts
-      : [];
+  const contacts = config?.footer?.contacts || [];
+  const links = config?.footer?.links || []; // Support for link list if present in config
 
+  // Qualitas Style: Footer is substantial, high contrast or visually grounded.
   return (
-    <Background color="bg-white border-t border-gray-200">
-      <Section yPadding="py-12">
-        <CenteredFooter
-          logo={<Logo />}
-          iconList={
-            <div className="flex gap-4 opacity-50 transition-opacity hover:opacity-100">
-              {/* Espaço reservado para ícones sociais se necessário */}
-            </div>
-          }
-        >
-          {contacts.length > 0 ? (
-            contacts.map((contact: string, index: number) => (
-              <li
-                key={index}
-                className="text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
-              >
-                {contact}
-              </li>
-            ))
-          ) : (
-            <li className="text-sm font-medium text-gray-500">
-              Entre em contato conosco
-            </li>
+    <Background color="bg-gray-50 border-t border-gray-200">
+      <Section yPadding="py-16 md:py-24">
+        <CenteredFooter logo={<Logo />} iconList={<></>}>
+          {/* Render links if available, otherwise contacts */}
+          {(links.length > 0 ? links : contacts).map(
+            (item: any, index: number) => {
+              const label = typeof item === 'string' ? item : item.label;
+              const link = typeof item === 'string' ? '#' : item.link;
+
+              return (
+                <li key={index}>
+                  <a
+                    href={link}
+                    className="text-gray-600 transition-colors hover:text-primary-600"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            },
           )}
         </CenteredFooter>
       </Section>

@@ -2,14 +2,16 @@ import { AppConfig } from '../utils/AppConfig';
 
 const FooterCopyright = () => (
   <div className="footer-copyright">
-    © Copyright {new Date().getFullYear()} {(AppConfig as any).site_name}.
+    &copy; {new Date().getFullYear()}{' '}
+    <span className="font-bold text-gray-900">
+      {(AppConfig as any).site_name}
+    </span>
+    .
+    <br className="sm:hidden" /> All rights reserved.
     <style jsx>
       {`
         .footer-copyright :global(a) {
-          @apply text-primary-500;
-        }
-        .footer-copyright :global(a:hover) {
-          @apply underline;
+          @apply text-primary-600 hover:text-primary-700 transition-colors duration-200 font-medium;
         }
       `}
     </style>

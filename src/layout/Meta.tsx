@@ -12,7 +12,7 @@ type IMetaProps = {
 
 const Meta = (props: IMetaProps) => {
   const router = useRouter();
-  const config = AppConfig as any; // Cast para segurança
+  const config = AppConfig as any;
 
   return (
     <>
