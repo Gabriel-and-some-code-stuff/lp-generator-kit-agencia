@@ -7,7 +7,7 @@ A missão é analisar dados do cliente e configurar uma Landing Page **utilizand
 
 ## Regras de Ouro (Inquebráveis)
 
-O agente **não pode inventar componentes**. Apenas os seguintes são permitidos: `Hero`, `Features`, `CTA` e `Footer`.
+O agente **não pode inventar componentes**. 
 
 A adaptação é obrigatória. A seção `Features` pode representar **Depoimentos, Serviços ou Portfólio**, desde que apenas o **texto e a imagem** sejam alterados. A estrutura permanece intocável.
 
