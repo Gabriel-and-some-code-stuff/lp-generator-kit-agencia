@@ -6,16 +6,23 @@ const VerticalFeatures = () => {
   const config = AppConfig as any;
   const featuresList = config?.features || [];
 
+  if (!featuresList || featuresList.length === 0) {
+    return null;
+  }
+
   return (
     <Section
-      title="Nossos Serviços Especializados"
-      description="Soluções completas e adaptáveis para simplificar a gestão do seu negócio."
-      yPadding="py-20 bg-white"
+      title={config.featuresTitle || 'Nossos Diferenciais'}
+      description={
+        config.featuresDescription ||
+        'Soluções completas pensadas para o seu negócio.'
+      }
+      yPadding="py-24 md:py-32"
+      className="bg-gray-50"
     >
-      {/* Transformando a lista em um Grid estilo Cards (Padrão Qualitas) */}
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
         {featuresList.map((feature: any, index: number) => (
-          <VerticalFeatureRow key={index} {...feature} index={index} />
+          <VerticalFeatureRow key={index} {...feature} />
         ))}
       </div>
     </Section>

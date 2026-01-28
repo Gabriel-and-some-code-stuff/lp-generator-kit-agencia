@@ -1,25 +1,34 @@
 import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
-import { Banner } from './Banner';
+import { Benefits } from './Benefits';
+import { ContactForm } from './ContactForm';
+import { FAQ } from './FAQ';
 import { Footer } from './Footer';
 import { Hero } from './Hero';
-import { Sponsors } from './Sponsors';
-import { VerticalFeatures } from './VerticalFeatures';
+import { HowItWorks } from './HowitWorks';
+import { Problem } from './Problem';
+import { SocialProof } from './SocialProof';
+import { SoftCTA } from './SoftCTA';
+import { Solution } from './Solution';
+import { Trust } from './Trust';
 
 const Base = () => {
   const config = AppConfig as any;
-  const title = config?.title || 'Qualitas Style Landing';
-  const description = config?.description || 'Professional Business Solutions';
 
   return (
-    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased selection:bg-primary-100 selection:text-primary-900">
-      <Meta title={title} description={description} />
+    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
+      <Meta title={config.title} description={config.description} />
 
-      {/* Sections stacked with clear vertical rhythm */}
       <Hero />
-      <Sponsors />
-      <VerticalFeatures />
-      <Banner />
+      <Trust />
+      <Problem />
+      <Solution />
+      <HowItWorks />
+      <Benefits />
+      <SocialProof />
+      <FAQ />
+      <SoftCTA />
+      <ContactForm />
       <Footer />
     </div>
   );

@@ -6,8 +6,6 @@ const Sponsors = () => {
   const socialProof = config?.socialProof;
   const logos = socialProof?.logos || [];
 
-  // STRICT CONDITIONAL RENDERING
-  // If no logos are present, or explicit signal to hide, do not render.
   if (!logos || logos.length === 0) {
     return null;
   }

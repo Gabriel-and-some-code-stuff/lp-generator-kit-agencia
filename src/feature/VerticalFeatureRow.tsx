@@ -15,10 +15,8 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
     ? safeImage
     : `${router.basePath}${safeImage}`;
 
-  // Qualitas-inspired: Clean cards with strong typographic hierarchy
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
-      {/* Image Container with enforced aspect ratio for consistency */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-50">
         {safeImage ? (
           <img
@@ -27,7 +25,6 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
             className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          // Fallback for missing images to maintain layout integrity
           <div className="flex size-full items-center justify-center bg-gray-100 text-gray-400">
             <span className="text-sm font-medium">Image not available</span>
           </div>

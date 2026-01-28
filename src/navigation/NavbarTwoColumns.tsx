@@ -23,7 +23,6 @@ const NavbarTwoColumns = (props: INavbarProps) => (
       </ul>
     </nav>
 
-    {/* Mobile Navigation Toggle (Placeholder for future implementation) */}
     <div className="block md:hidden">
       <button className="rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500">
         <svg
