@@ -6,31 +6,26 @@ type ILogoProps = {
 
 const Logo = (props: ILogoProps) => {
   const config = AppConfig as any;
-  const logoData = config?.logo || {};
-  const logoUrl = typeof logoData === 'string' ? logoData : logoData.url;
-  const siteName = config?.site_name || 'Brand';
-
-  if (logoUrl) {
-    return (
-      <img
-        src={logoUrl}
-        alt={siteName}
-        className={`${props.xl ? 'h-10 md:h-12' : 'h-8 md:h-9'} w-auto object-contain`}
-      />
-    );
-  }
+  const siteName = config?.site_name || 'Landing Page';
 
   const fontStyle = props.xl
-    ? 'font-extrabold text-3xl tracking-tight'
+    ? 'font-bold text-3xl tracking-tighter'
     : 'font-bold text-xl tracking-tight';
 
   return (
-    <div className={`flex items-center gap-2.5 text-gray-900 ${fontStyle}`}>
-      <div
-        className={`rounded bg-primary-600 ${props.xl ? 'size-8' : 'size-6'}`}
-      />
-      <span>{siteName}</span>
-    </div>
+    <span className={`inline-flex items-center text-gray-900 ${fontStyle}`}>
+      {/* Ícone geométrico minimalista (quadrado) */}
+      <svg
+        className="mr-3 size-5 text-primary-600"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="24" height="24" />
+      </svg>
+
+      {siteName}
+    </span>
   );
 };
 

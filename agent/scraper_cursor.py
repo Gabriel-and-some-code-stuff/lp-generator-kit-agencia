@@ -1,14 +1,12 @@
-import os
-import sys
-import time
-import re
 import json
-from collections import Counter
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Optional, Set
-from urllib.parse import urlparse, urljoin
+import re
+import time
+import sys
+import os
+from typing import Dict, Any, List, Optional
+from dataclasses import dataclass, asdict, field
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag, Comment
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -16,393 +14,724 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 # --- CONFIGURATION ---
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_FILE = os.path.join(BASE_DIR, "contexto_para_cursor.txt")
+OUTPUT_JSON_FILE = "extraction_output.json"
+OUTPUT_CONTEXT_FILE = "contexto_para_cursor.txt"
+OUTPUT_CLEAN_HTML_FILE = "clean_source.html" # New file for inspection
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+CONTEXT_FILE_PATH = os.path.join(PROJECT_ROOT, "contexto_para_cursor.txt")
+CLEAN_HTML_PATH = os.path.join(CURRENT_DIR, OUTPUT_CLEAN_HTML_FILE)
 
-# --- DATA STRUCTURES ---
+# --- DATA STRUCTURES (Mirroring AppConfig.ts) ---
 
 @dataclass
-class MetaData:
-    site_name: str = ""
+class LogoData:
     url: str = ""
-    language: str = "pt-br"
-    business_type: str = "Generic"
+    width: int = 200
+    height: int = 50
+    alt: str = "Logo"
+
+@dataclass
+class HeroData:
+    title: str = ""
+    highlight: str = ""
+    description: str = ""
+    button: str = ""
+    secondaryButton: str = ""
+    buttonLink: str = "#"
+    image: str = ""
+
+@dataclass
+class TrustStat:
+    value: str
+    label: str
+
+@dataclass
+class TrustData:
+    stats: List[TrustStat] = field(default_factory=list)
+
+@dataclass
+class ProblemData:
     title: str = ""
     description: str = ""
+    items: List[str] = field(default_factory=list)
 
 @dataclass
-class ColorPalette:
-    brand_primary: str = ""
-    cta_color: str = ""
-    accent_color: str = ""
-    neutral_base: str = ""
+class SolutionCard:
+    title: str
+    description: str
 
 @dataclass
-class BrandAssets:
-    logo_url: str = ""
-    logo_type: str = "" # svg, png
-    colors: ColorPalette = field(default_factory=ColorPalette)
+class SolutionData:
+    title: str = ""
+    subtitle: str = ""
+    cards: List[SolutionCard] = field(default_factory=list)
 
 @dataclass
-class ContentBlock:
-    intent: str # VALUE_PROP, SERVICE, TRUST, CTA
-    text: str
-    tag: str
+class HowItWorksStep:
+    title: str
+    description: str
 
 @dataclass
-class SectionStatus:
+class HowItWorksData:
+    title: str = ""
+    steps: List[HowItWorksStep] = field(default_factory=list)
+
+@dataclass
+class BenefitsData:
+    title: str = ""
+    items: List[str] = field(default_factory=list)
+
+@dataclass
+class Testimonial:
     name: str
-    found: bool
-    confidence: str
+    role: str
+    text: str
 
 @dataclass
-class DesignHeuristics:
-    visual_density: str = "Medium"
-    layout_style: str = "Structured"
-    industry_vibe: str = "Corporate"
+class SocialProofData:
+    title: str = ""
+    testimonials: List[Testimonial] = field(default_factory=list)
+    logos: List[str] = field(default_factory=list)
 
 @dataclass
-class ScrapedContext:
-    metadata: MetaData = field(default_factory=MetaData)
-    brand: BrandAssets = field(default_factory=BrandAssets)
-    content: List[ContentBlock] = field(default_factory=list)
-    sections: List[SectionStatus] = field(default_factory=list)
-    heuristics: DesignHeuristics = field(default_factory=DesignHeuristics)
-    raw_images: List[str] = field(default_factory=list)
+class FAQItem:
+    q: str
+    a: str
 
-# --- UTILS ---
+@dataclass
+class FAQData:
+    title: str = ""
+    questions: List[FAQItem] = field(default_factory=list)
+
+@dataclass
+class CTAData:
+    title: str = ""
+    subtitle: str = ""
+    button: str = ""
+    link: str = "#"
+
+@dataclass
+class FooterLink:
+    label: str
+    link: str
+
+@dataclass
+class FooterData:
+    company_name: str = ""
+    description: str = ""
+    contacts: List[str] = field(default_factory=list)
+    links: List[FooterLink] = field(default_factory=list)
+
+@dataclass
+class FeatureItem:
+    title: str
+    description: str
+    image: str
+    imageAlt: str
+    reverse: bool
+
+@dataclass
+class StructuralSection:
+    tag: str
+    headings: List[str]
+    has_form: bool
+    image_count: int
+    card_count: int
+    text_length: int
+
+@dataclass
+class StructuralMap:
+    total_sections: int
+    total_forms: int
+    total_images: int
+    total_navs: int
+    total_footers: int
+    sections: List[StructuralSection] = field(default_factory=list)
+
+@dataclass
+class AppConfigData:
+    site_name: str = ""
+    title: str = ""
+    description: str = ""
+    locale: str = "pt-br"
+    logo: LogoData = field(default_factory=LogoData)
+    hero: HeroData = field(default_factory=HeroData)
+    trust: Optional[TrustData] = None
+    problem: Optional[ProblemData] = None
+    solution: Optional[SolutionData] = None
+    howItWorks: Optional[HowItWorksData] = None
+    benefits: Optional[BenefitsData] = None
+    socialProof: Optional[SocialProofData] = None
+    faq: Optional[FAQData] = None
+    cta: Optional[CTAData] = None
+    footer: FooterData = field(default_factory=FooterData)
+    features: List[FeatureItem] = field(default_factory=list) 
+    primaryColorCandidate: str = "" 
+    structural_map: Optional[StructuralMap] = None # Added Structural Map
+
+# --- UTILITIES ---
 
 def clean_text(text: str) -> str:
     if not text: return ""
-    # Remove excessive whitespace
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return re.sub(r'\s+', ' ', text).strip()
 
-def is_valid_color(color_str: str) -> bool:
-    if not color_str: return False
-    if color_str == 'rgba(0, 0, 0, 0)': return False
-    if 'rgb' in color_str or '#' in color_str: return True
+def make_absolute_url(base_url: str, link: str) -> str:
+    if not link: return ""
+    if link.startswith('data:'): return link
+    if link.startswith('http'): return link
+    if link.startswith('//'): return 'https:' + link
+    base = base_url.rstrip('/')
+    if link.startswith('/'): return base + link
+    return base + '/' + link
+
+def normalize_url(url: str) -> str:
+    url = url.strip()
+    if not url.startswith('http'):
+        return 'https://' + url
+    return url
+
+def rgb_to_hex(rgb_string: str) -> Optional[str]:
+    if not rgb_string or 'rgba(0, 0, 0, 0)' in rgb_string or 'transparent' in rgb_string:
+        return None
+    match = re.search(r'rgba?\((\d+),\s*(\d+),\s*(\d+)', rgb_string)
+    if match:
+        r, g, b = map(int, match.groups())
+        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
+    if rgb_string.startswith('#'):
+        return rgb_string
+    return None
+
+def is_neutral_color(hex_color: str) -> bool:
+    if not hex_color or not hex_color.startswith('#'): return True
+    hex_color = hex_color.lstrip('#')
+    if len(hex_color) == 3: hex_color = ''.join([c*2 for c in hex_color])
+    try:
+        r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    except ValueError: return True
+    variance = max(r, g, b) - min(r, g, b)
+    if variance < 20: return True 
+    if hex_color.lower() in ['e0e0e0', 'f5f5f5', 'cccccc', 'd1d5db', '9ca3af', 'ffffff', '000000']: return True
     return False
 
-def rgb_to_hex(rgb_str):
-    # Basic conversion if needed, or keep rgb
-    # For simplicity, keeping as is if it's valid css
-    return rgb_str
+# --- STRUCTURAL ANALYZER ---
 
-# --- LAYERS IMPLEMENTATION ---
+class StructuralAnalyzer:
+    def __init__(self, html_source: str):
+        self.soup = BeautifulSoup(html_source, 'html.parser')
+    
+    def clean_dom(self) -> str:
+        """Removes noise tags and returns clean HTML."""
+        for tag in self.soup(["script", "style", "noscript", "iframe", "svg", "link", "meta"]):
+            tag.decompose()
+        
+        # Remove comments
+        for comment in self.soup.find_all(string=lambda text: isinstance(text, Comment)):
+            comment.extract()
+            
+        return self.soup.prettify()
 
-class ScraperEngine:
-    def __init__(self, url, client_name_hint=""):
-        self.url = url
-        if not self.url.startswith('http'):
-            self.url = 'https://' + self.url
-        self.client_name_hint = client_name_hint
+    def count_cards(self, container: Tag) -> int:
+        """Heuristic: Count repeating children with similar structure."""
+        children = container.find_all(recursive=False)
+        if len(children) < 2: return 0
+        
+        # Simple check: do children have the same tag and similar class?
+        # Or are they list items?
+        count = 0
+        prev_sig = None
+        
+        for child in children:
+            if not isinstance(child, Tag): continue
+            # Signature: Tag name + class length (rough proxy for structure)
+            sig = (child.name, len(child.get("class", [])))
+            if sig == prev_sig:
+                count += 1
+            prev_sig = sig
+            
+        return count if count > 1 else 0
+
+    def generate_map(self) -> StructuralMap:
+        sections_data = []
+        
+        # Identify main containers. Prioritize <section>, then top-level <div>s if no sections found
+        containers = self.soup.find_all('section')
+        if not containers:
+            # Fallback: Look for divs that look like sections (direct children of body or main)
+            main = self.soup.find('main')
+            scope = main if main else self.soup.body
+            if scope:
+                containers = [c for c in scope.find_all('div', recursive=False) if isinstance(c, Tag)]
+
+        for section in containers:
+            # Headings
+            headings = [clean_text(h.get_text())[:50] for h in section.find_all(re.compile('^h[1-4]$'))]
+            
+            # Form
+            has_form = bool(section.find('form'))
+            
+            # Images
+            img_count = len(section.find_all('img'))
+            
+            # Text Length (rough)
+            text_len = len(clean_text(section.get_text()))
+            
+            # Repeated Cards
+            # Look for inner containers (grid/flex) that might hold cards
+            card_count = 0
+            inner_divs = section.find_all('div')
+            for div in inner_divs: # Check deeper divs
+                cc = self.count_cards(div)
+                if cc > card_count:
+                    card_count = cc
+            # Also check if the section itself is a list
+            if section.name in ['ul', 'ol']:
+                card_count = len(section.find_all('li'))
+
+            sections_data.append(StructuralSection(
+                tag=section.name,
+                headings=headings,
+                has_form=has_form,
+                image_count=img_count,
+                card_count=card_count,
+                text_length=text_len
+            ))
+
+        return StructuralMap(
+            total_sections=len(sections_data),
+            total_forms=len(self.soup.find_all('form')),
+            total_images=len(self.soup.find_all('img')),
+            total_navs=len(self.soup.find_all('nav')),
+            total_footers=len(self.soup.find_all('footer')),
+            sections=sections_data
+        )
+
+# --- EXTRACTOR LOGIC ---
+
+class WebScraper:
+    def __init__(self):
+        self.options = Options()
+        self.options.add_argument("--headless=new")
+        self.options.add_argument("--no-sandbox")
+        self.options.add_argument("--disable-dev-shm-usage")
+        self.options.add_argument("--window-size=1920,1080")
+        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
         self.driver = None
-        self.soup = None
-        self.context = ScrapedContext()
 
-    def _init_driver(self):
-        options = Options()
-        options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    def start_driver(self):
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.options)
 
-    def scrape(self):
-        print(f"🚀 [ENGINE] Starting extraction for: {self.url}")
-        self._init_driver()
-        try:
-            self.driver.get(self.url)
-            time.sleep(3) # Wait for JS
-            
-            # Scroll to trigger lazy load
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-            time.sleep(1)
-            self.driver.execute_script("window.scrollTo(0, 0);")
+    def stop_driver(self):
+        if self.driver:
+            self.driver.quit()
 
-            self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+    def fetch_page(self, url: str) -> str:
+        if not self.driver:
+            self.start_driver()
+        print(f"🕵️ Fetching {url}...", file=sys.stderr)
+        self.driver.get(url)
+        time.sleep(3)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(0, 0);")
+        return self.driver.page_source
 
-            # EXECUTE LAYERS
-            self._layer_metadata()
-            self._layer_brand_signals()
-            self._layer_content_intent()
-            self._layer_structural_sections()
-            self._layer_design_heuristics()
-            self._layer_noise_filtering()
+    def analyze_colors(self) -> str:
+        candidates = {}
+        selectors_high = ["a[href*='contact']", "button[type='submit']", ".btn-primary", ".button-primary"]
+        selectors_med = ["nav a", "h1", "h2", "footer a"]
 
-            return self.context
-        except Exception as e:
-            print(f"❌ [ERROR] Scraping failed: {e}")
-            import traceback
-            traceback.print_exc()
-            return None
-        finally:
-            if self.driver:
-                self.driver.quit()
+        def score_color(selector, weight):
+            try:
+                elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                for el in elements[:5]:
+                    if not el.is_displayed(): continue
+                    bg = rgb_to_hex(el.value_of_css_property('background-color'))
+                    fg = rgb_to_hex(el.value_of_css_property('color'))
+                    for color in [bg, fg]:
+                        if color and not is_neutral_color(color):
+                            candidates[color] = candidates.get(color, 0) + weight
+            except: pass
 
-    # --- 1. METADATA LAYER ---
-    def _layer_metadata(self):
-        print("🔹 [LAYER 1] Metadata...")
-        meta = self.context.metadata
-        meta.url = self.url
-        
-        # Title & Desc
-        if self.soup.title:
-            meta.title = clean_text(self.soup.title.string)
-        
-        desc_tag = self.soup.find("meta", attrs={"name": "description"})
-        if desc_tag:
-            meta.description = clean_text(desc_tag.get("content"))
-
-        # Site Name (OpenGraph or Title fallback)
-        og_site_name = self.soup.find("meta", property="og:site_name")
-        if og_site_name:
-            meta.site_name = clean_text(og_site_name.get("content"))
-        elif self.client_name_hint:
-            meta.site_name = self.client_name_hint
-        else:
-            meta.site_name = meta.title.split('|')[0].strip()
-
-        # Language Detection (Hard enforcement)
-        html_lang = self.soup.html.get('lang', '').lower()
-        body_text = self.soup.body.get_text().lower()
-        pt_score = sum(1 for word in ['você', 'atendimento', 'serviços', 'contato', 'brasil', 'solicite'] if word in body_text)
-        
-        if 'pt' in html_lang or pt_score > 0:
-            meta.language = 'pt-br'
-        else:
-            # Fallback if unsure, but prompt requested enforcement if PT dominates.
-            # Assuming PT context for this tool
-            meta.language = 'pt-br'
-
-    # --- 2. BRAND SIGNALS LAYER ---
-    def _layer_brand_signals(self):
-        print("🔹 [LAYER 2] Brand Signals...")
-        # A) Logo Extraction
-        logo_url = ""
-        
-        # Strategy: Look for img with 'logo' in class/id/alt inside header
-        candidates = []
-        for img in self.soup.find_all('img'):
-            score = 0
-            src = img.get('src', '')
-            if not src: continue
-            
-            src_lower = src.lower()
-            alt_lower = (img.get('alt') or '').lower()
-            class_id = (str(img.get('class')) + str(img.get('id'))).lower()
-
-            if 'logo' in class_id: score += 5
-            if 'logo' in src_lower: score += 3
-            if 'logo' in alt_lower: score += 2
-            if '.svg' in src_lower: score += 2 # Prefer SVG
-            
-            # Check parent (is it in header?)
-            parents = [p.name for p in img.parents]
-            if 'header' in parents or 'nav' in parents:
-                score += 3
-
-            if score > 0:
-                full_url = urljoin(self.url, src)
-                candidates.append((score, full_url))
+        for sel in selectors_high: score_color(sel, 3)
+        for sel in selectors_med: score_color(sel, 1)
 
         if candidates:
-            candidates.sort(key=lambda x: x[0], reverse=True)
-            logo_url = candidates[0][1]
+            return max(candidates, key=candidates.get)
+        return "#6366F1"
+
+class ContentExtractor:
+    def __init__(self, html: str, url: str, scraper: WebScraper):
+        self.soup = BeautifulSoup(html, 'html.parser')
+        self.url = url
+        self.scraper = scraper
+        self.raw_text = self.get_raw_text()
+
+    def get_raw_text(self) -> str:
+        # Clone soup to not destroy original
+        clean_soup = BeautifulSoup(str(self.soup), 'html.parser')
+        for script in clean_soup(["script", "style", "noscript", "iframe", "svg"]):
+            script.extract()
+        return clean_text(clean_soup.get_text())
+
+    def extract_logo(self) -> LogoData:
+        logo_url = ""
+        # Improved heuristic: prioritizing header logos
+        header = self.soup.find('header')
+        candidates = []
         
-        self.context.brand.logo_url = logo_url
-        self.context.brand.logo_type = 'svg' if '.svg' in logo_url.lower() else 'bitmap'
-
-        # B) Color Extraction via Computed Styles (Selenium)
-        # We need to find "Action" elements
-        def get_computed_color(selector, prop='background-color'):
-            try:
-                el = self.driver.find_element(By.CSS_SELECTOR, selector)
-                return el.value_of_css_property(prop)
-            except:
-                return None
-
-        # Try to find primary button color
-        btn_selectors = [
-            "a[href*='contact']", "button[type='submit']", 
-            ".btn-primary", ".button-primary", "a.button", 
-            "header a[href]" # CTA in header often
-        ]
+        if header:
+            candidates.extend(header.find_all("img"))
+            
+        candidates.extend(self.soup.find_all("img", {"class": re.compile(r'logo|brand', re.I)}))
         
-        primary_candidates = []
-        for sel in btn_selectors:
-            col = get_computed_color(sel)
-            if is_valid_color(col):
-                primary_candidates.append(col)
+        for img in candidates:
+            src = img.get('src')
+            if src and not any(x in src.lower() for x in ['icon', 'search', 'user', 'facebook', 'twitter']):
+                logo_url = make_absolute_url(self.url, src)
+                # If it's SVG or clearly named logo, stop
+                if 'logo' in src.lower() or src.endswith('.svg'):
+                    break
         
-        # Defaults
-        brand_primary = primary_candidates[0] if primary_candidates else "#0ea5e9" # Default fallback
+        return LogoData(url=logo_url, alt="Logo")
+
+    def extract_hero(self) -> HeroData:
+        hero = HeroData()
+        # Look for Hero/Banner section explicitly
+        hero_section = self.soup.find(lambda tag: tag.name in ['header', 'section', 'div'] and 
+                                      any(c in (tag.get('class') or []) for c in ['hero', 'banner', 'intro']))
         
-        # Try to find footer bg for neutral
-        neutral = get_computed_color("footer", 'background-color') or "#f7fafc"
+        scope = hero_section if hero_section else self.soup
 
-        self.context.brand.colors.brand_primary = brand_primary
-        self.context.brand.colors.cta_color = brand_primary # Often same, can be differentiated later
-        self.context.brand.colors.neutral_base = neutral
-
-    # --- 3. CONTENT INTENT LAYER ---
-    def _layer_content_intent(self):
-        print("🔹 [LAYER 3] Content Intent...")
+        h1 = scope.find('h1')
+        if h1:
+            hero.title = clean_text(h1.get_text())
+            p = h1.find_next('p')
+            if p: hero.description = clean_text(p.get_text())
         
-        # Extract H1/H2 for Value Prop
-        h1s = self.soup.find_all('h1')
-        for h1 in h1s:
-            text = clean_text(h1.get_text())
-            if len(text) > 5:
-                self.context.content.append(ContentBlock("VALUE_PROPOSITION", text, "h1"))
-
-        # Extract H2/H3 for Service Descriptions
-        # Look for sections containing "Serviços", "Services", "O que fazemos"
-        services_section = self.soup.find(lambda tag: tag.name in ['section', 'div'] and ('serviço' in tag.get_text().lower() or 'service' in tag.get_text().lower()))
+        # Image in hero
+        img = scope.find("img")
+        if img: 
+            src = img.get('src', '')
+            if 'logo' not in src.lower() and 'icon' not in src.lower():
+                hero.image = make_absolute_url(self.url, src)
         
-        if services_section:
-            for item in services_section.find_all(['h3', 'h4', 'li']):
-                text = clean_text(item.get_text())
-                if len(text) > 5 and len(text) < 100:
-                    self.context.content.append(ContentBlock("SERVICE_DESCRIPTION", text, item.name))
+        # CTA
+        btn = scope.find("a", string=re.compile(r'fale|contato|orçamento|começar', re.I))
+        if btn:
+            hero.button = clean_text(btn.get_text())
+            hero.buttonLink = make_absolute_url(self.url, btn.get('href', '#'))
+        else:
+            hero.button = "Falar com Especialista"
+
+        return hero
+
+    def extract_trust_stats(self) -> Optional[TrustData]:
+        # Improved: Structural validation
+        # Looking for containers with Number + Text pairs
+        stats = []
         
-        # Extract Trust Signals (numbers, badges)
-        # Heuristic: Look for short blocks with numbers + text
-        # (Simplified for now)
-
-    # --- 4. STRUCTURAL SECTIONS LAYER ---
-    def _layer_structural_sections(self):
-        print("🔹 [LAYER 4] Structural Sections...")
-        full_text = self.soup.get_text().lower()
+        # Regex for "Stat-like" strings: "+10", "100%", "500"
+        num_pattern = re.compile(r'^(\+?\d+[\d\.,]*[kK%+]?)$')
         
-        checks = {
-            "HERO": True, # Almost always exists
-            "SERVICES": any(x in full_text for x in ['serviços', 'services', 'soluções']),
-            "TESTIMONIALS": any(x in full_text for x in ['depoimentos', 'clientes', 'opiniões', 'reviews']),
-            "SPONSORS": len(self.soup.find_all('img')) > 5, # Weak heuristic, but a proxy
-            "CONTACT_FORM": bool(self.soup.find('form') or 'contato' in full_text),
-            "FOOTER": bool(self.soup.find('footer'))
-        }
-
-        for name, found in checks.items():
-            self.context.sections.append(SectionStatus(name, found, "High" if found else "Low"))
-
-    # --- 5. DESIGN HEURISTICS LAYER ---
-    def _layer_design_heuristics(self):
-        print("🔹 [LAYER 5] Design Heuristics...")
-        # Simple Logic based on content length
-        text_len = len(self.soup.get_text())
-        if text_len < 2000:
-            self.context.heuristics.visual_density = "Low (Minimalist)"
-        elif text_len > 10000:
-            self.context.heuristics.visual_density = "High (Content Heavy)"
+        potential_stats = self.soup.find_all(string=num_pattern)
         
-        # Industry guess based on keywords
-        full_text = self.soup.get_text().lower()
-        if any(x in full_text for x in ['saúde', 'médico', 'clínica', 'estética']):
-            self.context.heuristics.industry_vibe = "Health & Wellness"
-        elif any(x in full_text for x in ['construção', 'engenharia', 'obra', 'reforma']):
-            self.context.heuristics.industry_vibe = "Construction & Engineering"
-        elif any(x in full_text for x in ['advogado', 'direito', 'jurídico']):
-            self.context.heuristics.industry_vibe = "Legal & Corporate"
+        for s in potential_stats:
+            parent = s.parent
+            # Check for label nearby (next sibling or parent's sibling)
+            label = ""
+            # Case 1: Label is next sibling element
+            next_el = parent.find_next_sibling()
+            if next_el and len(clean_text(next_el.get_text())) < 30:
+                label = clean_text(next_el.get_text())
+            # Case 2: Label is in same container but after
+            elif parent.parent:
+                text_content = clean_text(parent.parent.get_text())
+                parts = text_content.split(s)
+                if len(parts) > 1 and len(parts[1].strip()) < 30:
+                    label = parts[1].strip()
+            
+            if label and len(label) > 2:
+                stats.append(TrustStat(value=s.strip(), label=label))
+        
+        if len(stats) >= 2:
+            return TrustData(stats=stats[:4])
+        return None
 
-    # --- 6. NOISE FILTERING LAYER ---
-    def _layer_noise_filtering(self):
-        # Filter duplicates in content blocks
-        seen = set()
-        unique_content = []
-        for block in self.context.content:
-            if block.text not in seen:
-                seen.add(block.text)
-                unique_content.append(block)
-        self.context.content = unique_content
+    def extract_solution_cards(self) -> Optional[SolutionData]:
+        # Structural check: Find a container with repeated children structure
+        # (Title + Desc) x 3+
+        
+        possible_roots = self.soup.find_all(lambda tag: tag.name in ['div', 'section', 'ul'])
+        
+        best_candidate = None
+        best_count = 0
+        
+        for root in possible_roots:
+            # Check direct children or list items
+            children = root.find_all(['li', 'div'], recursive=False)
+            if len(children) < 3: continue
+            
+            valid_cards = []
+            for child in children:
+                # Does it have a header?
+                h = child.find(re.compile('^h[3-6]$'))
+                # Does it have a paragraph?
+                p = child.find('p')
+                
+                if h and p:
+                    title = clean_text(h.get_text())
+                    desc = clean_text(p.get_text())
+                    if 3 < len(title) < 50 and 10 < len(desc) < 200:
+                        valid_cards.append(SolutionCard(title=title, description=desc))
+            
+            if len(valid_cards) > best_count:
+                best_count = len(valid_cards)
+                best_candidate = valid_cards
+                
+        if best_candidate and best_count >= 3:
+            return SolutionData(
+                title="Nossas Soluções",
+                subtitle="O que oferecemos",
+                cards=best_candidate[:6]
+            )
+        return None
 
-# --- OUTPUT GENERATOR ---
+    def extract_social_proof(self) -> Optional[SocialProofData]:
+        # 1. Testimonials: Look for Quote structure
+        testimonials = []
+        quotes = self.soup.find_all('blockquote')
+        for q in quotes:
+            text = clean_text(q.get_text())
+            # Try find author nearby
+            author = "Cliente"
+            footer = q.find('footer')
+            if footer: author = clean_text(footer.get_text())
+            else:
+                # Check next sibling
+                next_el = q.find_next_sibling()
+                if next_el and len(clean_text(next_el.get_text())) < 30:
+                    author = clean_text(next_el.get_text())
+            
+            if len(text) > 10:
+                testimonials.append(Testimonial(name=author, role="Cliente", text=text))
+                
+        # 2. Logos: Look for "Strip" of images
+        logos = []
+        # Find containers with many images
+        containers = self.soup.find_all(lambda tag: tag.name in ['div', 'section'] and len(tag.find_all('img')) >= 4)
+        
+        for cont in containers:
+            # Check if keywords present in section text or class
+            section_text = (cont.get('class') or []) + [cont.get_text()]
+            if any(k in str(section_text).lower() for k in ['parceiros', 'clientes', 'partners', 'clients']):
+                # This is likely a logo strip
+                imgs = cont.find_all('img')
+                for img in imgs:
+                    src = make_absolute_url(self.url, img.get('src', ''))
+                    if src: logos.append(src)
+                break # Found one logo strip, stop
+        
+        if testimonials or logos:
+            return SocialProofData(
+                title="Quem confia em nós",
+                testimonials=testimonials[:3],
+                logos=logos[:8]
+            )
+        return None
 
-def generate_context_file(context: ScrapedContext):
-    lines = []
-    lines.append("==========================================")
-    lines.append("   CONTEXTO GERADO PELO SCRAPER V2.0")
-    lines.append("==========================================")
-    lines.append("")
-    
-    # 1. METADATA
-    lines.append("## 1. METADATA LAYER")
-    lines.append(f"SITE_NAME: {context.metadata.site_name}")
-    lines.append(f"ORIGIN_URL: {context.metadata.url}")
-    lines.append(f"LANGUAGE: {context.metadata.language} (MANDATORY)")
-    lines.append(f"BUSINESS_TYPE: {context.metadata.business_type}")
-    lines.append(f"TITLE: {context.metadata.title}")
-    lines.append(f"DESCRIPTION: {context.metadata.description}")
-    lines.append("")
+    def extract_faq(self) -> Optional[FAQData]:
+        # Look for Q&A pattern: Header + Hidden/Visible Text
+        questions = []
+        
+        # Check for keywords
+        faq_section = self.soup.find(lambda tag: tag.name in ['section', 'div'] and 
+                                     any(k in clean_text(tag.get_text()).lower()[:50] for k in ['faq', 'perguntas', 'dúvidas']))
+        
+        if faq_section:
+            # Try to find repeating pairs
+            elements = faq_section.find_all(recursive=False)
+            # Flatten if nested
+            if len(elements) == 1: elements = elements[0].find_all(recursive=False)
+            
+            # Simple heuristic: Look for H tags followed by P/Div tags
+            for i in range(len(elements) - 1):
+                curr = elements[i]
+                nxt = elements[i+1]
+                
+                # Identify Question
+                is_q = curr.name in ['h3', 'h4', 'h5', 'dt', 'button'] or 'pergunta' in str(curr.get('class'))
+                # Identify Answer
+                is_a = nxt.name in ['p', 'div', 'dd'] or 'resposta' in str(nxt.get('class'))
+                
+                if is_q and is_a:
+                    q_text = clean_text(curr.get_text())
+                    a_text = clean_text(nxt.get_text())
+                    if '?' in q_text and len(a_text) > 10:
+                        questions.append(FAQItem(q=q_text, a=a_text))
+                        
+        if len(questions) >= 2:
+            return FAQData(title="Perguntas Frequentes", questions=questions)
+        return None
 
-    # 2. BRAND SIGNALS
-    lines.append("## 2. BRAND SIGNALS LAYER")
-    lines.append(f"LOGO_URL: {context.brand.logo_url}")
-    lines.append(f"LOGO_FORMAT: {context.brand.logo_type}")
-    lines.append(f"PRIMARY_COLOR: {context.brand.colors.brand_primary}")
-    lines.append(f"CTA_COLOR: {context.brand.colors.cta_color}")
-    lines.append(f"NEUTRAL_BASE: {context.brand.colors.neutral_base}")
-    lines.append("")
+    def extract_how_it_works(self) -> Optional[HowItWorksData]:
+        # Pattern: Ordered List or Numbered Steps
+        steps = []
+        
+        # Check for <ol> first
+        ols = self.soup.find_all('ol')
+        for ol in ols:
+            lis = ol.find_all('li')
+            if len(lis) >= 3:
+                for li in lis:
+                    # Split title/desc if possible
+                    txt = clean_text(li.get_text())
+                    if len(txt) > 10:
+                        parts = txt.split('.', 1)
+                        title = parts[0] if len(parts) > 1 else f"Passo {len(steps)+1}"
+                        desc = parts[1] if len(parts) > 1 else txt
+                        steps.append(HowItWorksStep(title=title, description=desc))
+                if steps: break
+        
+        # Fallback: Check for "1.", "2." text patterns in headers
+        if not steps:
+            headers = self.soup.find_all(re.compile('^h[3-5]$'), string=re.compile(r'^\d+\.'))
+            for h in headers:
+                title = clean_text(h.get_text())
+                desc = ""
+                p = h.find_next('p')
+                if p: desc = clean_text(p.get_text())
+                steps.append(HowItWorksStep(title=title, description=desc))
 
-    # 3. STRUCTURAL SECTIONS
-    lines.append("## 3. DETECTED SECTIONS")
-    for sec in context.sections:
-        status = "FOUND" if sec.found else "NOT FOUND"
-        lines.append(f"- {sec.name}: {status}")
-    lines.append("")
+        if len(steps) >= 3:
+            return HowItWorksData(title="Como Funciona", steps=steps)
+        return None
 
-    # 4. DESIGN HEURISTICS
-    lines.append("## 4. DESIGN GUIDANCE")
-    lines.append(f"DENSITY: {context.heuristics.visual_density}")
-    lines.append(f"LAYOUT_STYLE: {context.heuristics.layout_style}")
-    lines.append(f"INDUSTRY_VIBE: {context.heuristics.industry_vibe}")
-    lines.append("")
+    def extract_footer(self, company_name: str) -> FooterData:
+        footer = FooterData(company_name=company_name)
+        footer_el = self.soup.find('footer')
+        if footer_el:
+            # Extract emails
+            emails = set(re.findall(r'[\w\.-]+@[\w\.-]+', footer_el.get_text()))
+            phones = set(re.findall(r'\(?\d{2}\)?\s?\d{4,5}-?\d{4}', footer_el.get_text()))
+            footer.contacts = list(emails) + list(phones)
+            
+            p = footer_el.find('p')
+            if p: footer.description = clean_text(p.get_text())[:150]
+            
+            # Links
+            for a in footer_el.find_all('a', href=True):
+                txt = clean_text(a.get_text())
+                if txt and len(txt) < 20:
+                    footer.links.append(FooterLink(label=txt, link=make_absolute_url(self.url, a['href'])))
+                    if len(footer.links) >= 6: break
+        return footer
 
-    # 5. EXTRACTED CONTENT (INTENT-BASED)
-    lines.append("## 5. KEY CONTENT BLOCKS")
-    
-    value_props = [b.text for b in context.content if b.intent == "VALUE_PROPOSITION"]
-    services = [b.text for b in context.content if b.intent == "SERVICE_DESCRIPTION"]
-    
-    lines.append("--- VALUE PROPOSITIONS (HERO/HEADLINES) ---")
-    for vp in value_props[:3]: # Limit to top 3
-        lines.append(f"> {vp}")
-    
-    lines.append("\n--- SERVICES / KEY FEATURES ---")
-    for s in services[:6]: # Limit to top 6
-        lines.append(f"* {s}")
+    # Problem/Benefits are harder to structurally detect without semantic understanding.
+    # We will leave them as None (Disabled) unless specific keywords are extremely strong, 
+    # effectively defaulting to a safer "don't show" policy to avoid hallucination.
+    def extract_problem(self) -> Optional[ProblemData]: return None
+    def extract_benefits(self) -> Optional[BenefitsData]: return None
 
-    lines.append("\n--- IMAGE ASSETS (CANDIDATES) ---")
-    # (Optional: Add scraped image list here if needed, keeping it clean for now)
-    
-    return "\n".join(lines)
+
+def run_scraper(url: str, client_name: str = "Unknown"):
+    scraper = WebScraper()
+    try:
+        html = scraper.fetch_page(url)
+        
+        # --- NEW STRUCTURAL LAYER ---
+        struct_analyzer = StructuralAnalyzer(html)
+        
+        # 1. Clean HTML
+        clean_html = struct_analyzer.clean_dom()
+        
+        # 2. Save Clean HTML
+        with open(CLEAN_HTML_PATH, "w", encoding="utf-8") as f:
+            f.write(clean_html)
+        print(f"✅ Clean HTML saved to: {CLEAN_HTML_PATH}", file=sys.stderr)
+        
+        # 3. Generate Structural Map
+        struct_map = struct_analyzer.generate_map()
+        
+        # --- EXISTING EXTRACTION LAYER ---
+        # Pass the ALREADY CLEANED html to the ContentExtractor to avoid double cleaning
+        extractor = ContentExtractor(clean_html, url, scraper)
+        
+        # --- EXECUTE EXTRACTORS ---
+        logo = extractor.extract_logo()
+        hero = extractor.extract_hero()
+        trust = extractor.extract_trust_stats()
+        solution = extractor.extract_solution_cards() # Replaces Services
+        how_it_works = extractor.extract_how_it_works()
+        social_proof = extractor.extract_social_proof()
+        faq = extractor.extract_faq()
+        footer = extractor.extract_footer(client_name)
+        
+        # Disabled for safety (require stronger signals)
+        problem = extractor.extract_problem()
+        benefits = extractor.extract_benefits()
+        cta = None # Usually constructed generically
+
+        # Primary Color Analysis
+        primary_color = scraper.analyze_colors()
+
+        # Build Config
+        config = AppConfigData(
+            site_name=client_name,
+            title=f"{client_name} - {hero.title[:40]}...",
+            description=hero.description[:160],
+            logo=logo,
+            hero=hero,
+            trust=trust,
+            problem=problem,
+            solution=solution,
+            howItWorks=how_it_works,
+            benefits=benefits,
+            socialProof=social_proof,
+            faq=faq,
+            cta=cta,
+            footer=footer,
+            primaryColorCandidate=primary_color,
+            structural_map=struct_map # Include the map in output
+        )
+
+        # Output JSON
+        json_str = json.dumps(asdict(config), indent=2, ensure_ascii=False)
+        output_path = os.path.join(CURRENT_DIR, OUTPUT_JSON_FILE)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(json_str)
+        print(f"✅ Data saved to: {output_path}", file=sys.stderr)
+
+        # Context File
+        context_content = f"""=== CONFIGURAÇÃO EXTRAÍDA ===
+{json_str}
+
+=== STRUCTURAL MAP ===
+{json.dumps(asdict(struct_map), indent=2)}
+
+=== TEXTO DO SITE ===
+{extractor.raw_text[:5000]}
+"""
+        with open(CONTEXT_FILE_PATH, "w", encoding="utf-8") as f:
+            f.write(context_content)
+        print(f"✅ Contexto salvo em: {CONTEXT_FILE_PATH}", file=sys.stderr)
+
+    except Exception as e:
+        print(f"\n❌ Error: {str(e)}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+    finally:
+        scraper.stop_driver()
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python scraper_cursor.py <ClientName> <URL>")
-        # Fallback for interactive testing
-        client = input("Client Name: ")
-        url = input("URL: ")
-        if not url: return
+    if len(sys.argv) < 3:
+        try:
+            client = input("Client Name: ")
+            url = input("URL: ")
+            if url: run_scraper(normalize_url(url), client)
+        except: pass
     else:
-        client = sys.argv[1]
-        url = sys.argv[2]
-
-    engine = ScraperEngine(url, client)
-    context = engine.scrape()
-
-    if context:
-        output_text = generate_context_file(context)
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write(output_text)
-        print(f"\n✅ Context file generated at: {OUTPUT_FILE}")
-        
-        # Print preview
-        print("\n--- PREVIEW ---")
-        print(output_text[:500] + "...\n(see file for full content)")
+        run_scraper(normalize_url(sys.argv[2]), sys.argv[1])
 
 if __name__ == "__main__":
     main()
