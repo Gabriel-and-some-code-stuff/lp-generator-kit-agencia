@@ -52,4 +52,5 @@ agent/clientes_output.csv
 *.dmg
 *.pkg
 *.iso
+.env
 ```

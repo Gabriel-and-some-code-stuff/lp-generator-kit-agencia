@@ -8,7 +8,6 @@ import { Hero } from './Hero';
 import { HowItWorks } from './HowitWorks';
 import { Problem } from './Problem';
 import { SocialProof } from './SocialProof';
-import { SoftCTA } from './SoftCTA';
 import { Solution } from './Solution';
 import { Trust } from './Trust';
 
@@ -16,7 +15,7 @@ const Base = () => {
   const config = AppConfig as any;
 
   return (
-    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
+    <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased selection:bg-primary-100 selection:text-primary-700">
       <Meta title={config.title} description={config.description} />
 
       <Hero />
@@ -27,7 +26,7 @@ const Base = () => {
       <Benefits />
       <SocialProof />
       <FAQ />
-      <SoftCTA />
+      {/* SoftCTA removido para evitar redundância com o ContactForm */}
       <ContactForm />
       <Footer />
     </div>

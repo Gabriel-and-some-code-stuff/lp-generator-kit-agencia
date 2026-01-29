@@ -1,0 +1,233 @@
+{
+  "site_name": "Aiello Digital",
+  "title": "Aiello Digital - ...",
+  "description": "",
+  "locale": "pt-br",
+  "logo": {
+    "url": "",
+    "width": 200,
+    "height": 50,
+    "alt": "Logo"
+  },
+  "hero": {
+    "title": "",
+    "highlight": "",
+    "description": "",
+    "button": "Falar com Especialista",
+    "secondaryButton": "",
+    "buttonLink": "#",
+    "image": ""
+  },
+  "trust": null,
+  "problem": null,
+  "solution": null,
+  "howItWorks": null,
+  "benefits": null,
+  "socialProof": {
+    "title": "Quem confia em nós",
+    "testimonials": [],
+    "logos": [
+      "https://aiello.digital/wp-content/uploads/2023/04/Logo-completo-branco.png",
+      "https://aiello.digital/wp-content/uploads/2021/09/YouTube-1-1024x284.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/6.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/1.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/2.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/3.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/4.png",
+      "https://aiello.digital/wp-content/uploads/2025/01/5.png"
+    ]
+  },
+  "faq": null,
+  "cta": null,
+  "footer": {
+    "company_name": "Aiello Digital",
+    "description": "",
+    "contacts": [],
+    "links": []
+  },
+  "features": [],
+  "primaryColorCandidate": "#6366F1",
+  "structural_map": {
+    "total_sections": 16,
+    "total_forms": 0,
+    "total_images": 17,
+    "total_navs": 0,
+    "total_footers": 0,
+    "sections": [
+      {
+        "tag": "section",
+        "headings": ["Gestão de anúncios para sua empresa vender mais."],
+        "has_form": false,
+        "image_count": 1,
+        "card_count": 4,
+        "text_length": 66
+      },
+      {
+        "tag": "section",
+        "headings": [],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 0
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "SE VOCÊ POSSUI UM...",
+          "Roupas, acessórios, eletrônicos...",
+          "Restaurante, pet shop, barbearia...",
+          "Cursos online, e-books, mentoria...",
+          "Serviços de TI, consultoria, contabilidade...",
+          "Ou simplesmente possui clientes humanos,",
+          "NÓS VAMOS TE AJUDAR A VENDER MAIS!"
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 2,
+        "text_length": 298
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Roupas, acessórios, eletrônicos...",
+          "Restaurante, pet shop, barbearia..."
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 95
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Cursos online, e-books, mentoria...",
+          "Serviços de TI, consultoria, contabilidade..."
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 105
+      },
+      {
+        "tag": "section",
+        "headings": ["Somos especialistas em anunciar nas principais pla"],
+        "has_form": false,
+        "image_count": 1,
+        "card_count": 0,
+        "text_length": 59
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "CRIAMOS CAMPANHAS PARA:",
+          "Conversão em Vendas",
+          "Divulgue suas ofertas com anúncios otimizados para",
+          "Geração de Leads",
+          "Capture o contato de pessoas interessadas no seu n",
+          "Distribuição de Conteúdo",
+          "Divulgue suas ofertas com anúncios otimizados para",
+          "Lançamentos",
+          "Aqueça sua audiência, gere leads, faça lembretes d",
+          "Remarketing",
+          "Anuncie somente para quem já interagiu com seu sit",
+          "Branding",
+          "Aumente o reconhecimento da sua marca atingindo po"
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 2,
+        "text_length": 519
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Conversão em Vendas",
+          "Divulgue suas ofertas com anúncios otimizados para",
+          "Geração de Leads",
+          "Capture o contato de pessoas interessadas no seu n"
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 158
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Distribuição de Conteúdo",
+          "Divulgue suas ofertas com anúncios otimizados para",
+          "Lançamentos",
+          "Aqueça sua audiência, gere leads, faça lembretes d"
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 177
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Remarketing",
+          "Anuncie somente para quem já interagiu com seu sit",
+          "Branding",
+          "Aumente o reconhecimento da sua marca atingindo po"
+        ],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 158
+      },
+      {
+        "tag": "section",
+        "headings": ["Algumas das marcas que confiam na Aiello.Digital"],
+        "has_form": false,
+        "image_count": 14,
+        "card_count": 9,
+        "text_length": 48
+      },
+      {
+        "tag": "section",
+        "headings": [],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 0
+      },
+      {
+        "tag": "section",
+        "headings": ["Vamos conversar?"],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 33
+      },
+      {
+        "tag": "section",
+        "headings": [],
+        "has_form": false,
+        "image_count": 0,
+        "card_count": 0,
+        "text_length": 0
+      },
+      {
+        "tag": "section",
+        "headings": [
+          "Links Importantes",
+          "Este site não é afiliado ao Facebook ou a qualquer"
+        ],
+        "has_form": false,
+        "image_count": 1,
+        "card_count": 0,
+        "text_length": 267
+      },
+      {
+        "tag": "section",
+        "headings": ["Links Importantes"],
+        "has_form": false,
+        "image_count": 1,
+        "card_count": 0,
+        "text_length": 65
+      }
+    ]
+  }
+}

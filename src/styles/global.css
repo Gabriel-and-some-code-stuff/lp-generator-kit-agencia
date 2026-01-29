@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,25 +8,24 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-sans);
-  @apply text-gray-900 bg-white antialiased;
-  letter-spacing: -0.015em; /* Toque moderno sutil */
+  @apply text-gray-700 bg-white antialiased selection:bg-primary-500 selection:text-white;
 }
 
-/* Utilitários de Animação Suíça (Rápida e Suave) */
-.swiss-transition {
-  @apply transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)];
-}
-
-/* Grid Overlay (Opcional, para debug visual se quiser) */
-.debug-grid {
-  background-size: 100px 100px;
-  background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
-    linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
-}
-
-/* Tipografia */
+/* Melhoria na renderização de fontes */
 h1, h2, h3, h4, h5, h6 {
-  @apply tracking-tight font-bold text-gray-900;
+  @apply tracking-tight text-gray-900;
+}
+
+/* Utilitário para gradientes sutis */
+.bg-mesh {
+  background-color: #ffffff;
+  background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), 
+                    radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), 
+                    radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
 }
