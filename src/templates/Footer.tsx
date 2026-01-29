@@ -11,8 +11,8 @@ const Footer = () => {
   const social = config?.footer?.social || [];
 
   return (
-    <Background color="bg-gray-50 border-t border-gray-200">
-      <Section yPadding="py-12 md:py-16">
+    <Background color="bg-white border-t border-gray-100">
+      <Section yPadding="py-16">
         <CenteredFooter
           logo={<Logo />}
           iconList={
@@ -25,11 +25,7 @@ const Footer = () => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    // MUDANÇA AQUI:
-                    // 1. hover:bg-primary-500 (Fundo cor da marca)
-                    // 2. hover:border-primary-500 (Borda cor da marca para sumir com o cinza)
-                    // 3. hover:text-white (Ícone branco)
-                    className="flex size-10 items-center justify-center rounded-full border border-gray-100 bg-white text-gray-400 shadow-sm transition-all hover:-translate-y-1 hover:border-primary-500 hover:bg-primary-500 hover:text-white hover:shadow-md"
+                    className="flex size-10 items-center justify-center rounded-full bg-gray-50 text-gray-400 transition-all hover:-translate-y-1 hover:bg-primary-500 hover:text-white"
                     title={item.label}
                   >
                     <span className="sr-only">{item.label}</span>
@@ -93,7 +89,7 @@ const Footer = () => {
                 <li key={index}>
                   <a
                     href={link}
-                    className="text-sm font-medium text-gray-600 transition-colors hover:text-primary-600"
+                    className="text-sm font-medium text-gray-500 transition-colors hover:text-primary-600"
                   >
                     {label}
                   </a>

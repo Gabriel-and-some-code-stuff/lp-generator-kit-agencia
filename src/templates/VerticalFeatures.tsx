@@ -20,7 +20,7 @@ const VerticalFeatures = () => {
       yPadding="py-24 md:py-32"
       className="bg-gray-50"
     >
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
         {featuresList.map((feature: any, index: number) => (
           <VerticalFeatureRow key={index} {...feature} />
         ))}

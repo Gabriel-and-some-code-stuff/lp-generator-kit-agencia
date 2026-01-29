@@ -8,17 +8,17 @@ const SocialProof = () => {
   return (
     <Section
       title={socialProof.title}
-      yPadding="py-12 md:py-20"
-      className="bg-white"
+      yPadding="py-16 md:py-24" // Reduzido
+      className="bg-gray-50/50" // Leve contraste
     >
-      <div className="mb-12 grid gap-6 md:grid-cols-3">
+      <div className="mb-16 grid gap-8 md:grid-cols-3">
         {socialProof.testimonials.map((testim: any, index: number) => (
           <div
             key={index}
-            className="flex h-full flex-col justify-between rounded-2xl bg-gray-50 p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="flex h-full flex-col justify-between rounded-xl border border-gray-100 bg-white p-8 shadow-sm"
           >
             <div>
-              <div className="mb-4 flex text-yellow-400">
+              <div className="mb-5 flex text-yellow-400">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
@@ -29,12 +29,11 @@ const SocialProof = () => {
                   </svg>
                 ))}
               </div>
-              <p className="mb-4 text-base font-medium leading-relaxed text-gray-700">
+              <p className="mb-6 text-base italic leading-relaxed text-gray-700">
                 &quot;{testim.text}&quot;
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-full bg-gray-300" />
+            <div className="flex items-center gap-4 border-t border-gray-100 pt-4">
               <div>
                 <div className="text-sm font-bold text-gray-900">
                   {testim.name}
@@ -49,17 +48,17 @@ const SocialProof = () => {
       </div>
 
       {socialProof.logos && socialProof.logos.length > 0 && (
-        <div className="mt-10 border-t border-gray-100 pt-10">
-          <p className="mb-6 text-center text-xs font-bold uppercase tracking-widest text-gray-400">
+        <div className="mt-12 text-center">
+          <p className="mb-8 text-xs font-bold uppercase tracking-widest text-gray-400">
             Empresas que confiam
           </p>
-          <div className="flex flex-wrap justify-center gap-8 opacity-50 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
+          <div className="flex flex-wrap justify-center gap-10 opacity-60 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
             {socialProof.logos.map((logo: string, index: number) => (
               <img
                 key={index}
                 src={logo}
                 alt="Parceiro"
-                className="h-6 w-auto object-contain md:h-8"
+                className="h-8 w-auto object-contain md:h-9"
               />
             ))}
           </div>

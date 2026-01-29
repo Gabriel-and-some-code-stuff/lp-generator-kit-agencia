@@ -14,18 +14,19 @@ html {
 
 body {
   font-family: var(--font-sans);
+  /* Fundo neutro e limpo para garantir consistência em qualquer nicho */
   @apply text-gray-700 bg-white antialiased selection:bg-primary-500 selection:text-white;
 }
 
-/* Melhoria na renderização de fontes */
 h1, h2, h3, h4, h5, h6 {
   @apply tracking-tight text-gray-900;
 }
 
-/* Utilitário para gradientes sutis */
-.bg-mesh {
-  background-color: #ffffff;
-  background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), 
-                    radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), 
-                    radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
+/* Utilitários Visuais */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500;
+}
+
+.hover-up {
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
 }

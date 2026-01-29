@@ -13,50 +13,34 @@ module.exports = {
       '4xl': '2.25rem',
       '5xl': '3rem',
       '6xl': '4rem',
-      '7xl': '5rem',
     },
     extend: {
       colors: {
         primary: {
-          100: '#FDE8E8', // Vermelho muito claro (Baseado no #dc1d16)
-          200: '#FBD5D5',
-          300: '#F8B4B4',
-          400: '#F98080',
-          500: '#DC1D16', // COR EXATA DA MARCA (Lauzane Red)
-          600: '#B91C1C',
-          700: '#991B1B',
-          800: '#7F1D1D',
-          900: '#450A0A',
+          100: '#E6F6FE',
+          200: '#C0EAFC',
+          300: '#9ADDFB',
+          400: '#4FC3F7',
+          500: '#0ea5e9', // COR PADRÃO (SKY BLUE)
+          600: '#0398DC',
+          700: '#026592',
+          800: '#014C6E',
+          900: '#013349',
         },
         gray: {
-          50: '#F9FAFB',
-          100: '#F3F4F6',
-          200: '#E5E7EB',
-          300: '#D1D5DB',
-          400: '#9CA3AF',
-          500: '#6B7280',
-          600: '#4B5563',
-          700: '#374151',
-          800: '#1F2937',
-          900: '#111827',
+          100: '#f7fafc',
+          200: '#edf2f7',
+          300: '#e2e8f0',
+          400: '#cbd5e0',
+          500: '#a0aec0',
+          600: '#718096',
+          700: '#4a5568',
+          800: '#2d3748',
+          900: '#1a202c',
         },
       },
       lineHeight: {
-        hero: '1.1',
-      },
-      boxShadow: {
-        soft: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-        glow: '0 0 20px rgba(220, 29, 22, 0.3)', // Glow vermelho
-        card: '0 10px 30px -5px rgba(0, 0, 0, 0.05)',
-      },
-      animation: {
-        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-      },
-      keyframes: {
-        fadeInUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+        hero: '4.5rem',
       },
     },
   },

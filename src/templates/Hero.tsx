@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import { Background } from '../background/Background';
 import { Button } from '../button/Button';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
@@ -12,99 +11,97 @@ const Hero = () => {
   const hero = config?.hero || {};
 
   return (
-    <Background color="bg-white relative overflow-hidden">
-      {/* Elemento decorativo de fundo */}
-      <div className="bg-primary-50/50 absolute left-1/2 top-0 ml-[40rem] size-[80rem] -translate-y-1/2 rounded-full blur-3xl" />
+    <div className="relative overflow-hidden bg-white">
+      {/* Background mais neutro */}
+      <div className="absolute left-1/2 top-0 -z-10 ml-[-40%] h-[700px] w-[200%] rounded-b-[100%] bg-gray-50/60 opacity-60" />
 
-      <Section yPadding="py-4 relative z-10">
-        <NavbarTwoColumns logo={<Logo xl />}>
-          <li>
-            <Link
-              href="/"
-              className="text-gray-600 transition-colors hover:text-primary-600"
-            >
-              Início
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/#services"
-              className="text-gray-600 transition-colors hover:text-primary-600"
-            >
-              Serviços
-            </Link>
-          </li>
-          <li>
-            <Link href={hero.buttonLink || '#'}>
-              <div className="rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg">
-                Contato
-              </div>
-            </Link>
-          </li>
-        </NavbarTwoColumns>
-      </Section>
+      <NavbarTwoColumns logo={<Logo />}>
+        <li>
+          <Link
+            href="/"
+            className="text-gray-600 transition-colors hover:text-primary-600"
+          >
+            Início
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/#services"
+            className="text-gray-600 transition-colors hover:text-primary-600"
+          >
+            Soluções
+          </Link>
+        </li>
+        <li>
+          <Link href={hero.buttonLink || '#'}>
+            <div className="rounded-lg bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-md">
+              Contato
+            </div>
+          </Link>
+        </li>
+      </NavbarTwoColumns>
 
-      <Section yPadding="pt-10 pb-12 md:pt-16 md:pb-20 relative z-10">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-8">
+      <Section yPadding="pt-32 pb-16 md:pt-40 md:pb-20">
+        {' '}
+        {/* Ajustado padding top para compensar navbar maior */}
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             {hero.highlight && (
-              <div className="bg-primary-50 mb-4 inline-flex items-center rounded-full border border-primary-100 px-3 py-1 shadow-sm">
-                <span className="text-xs font-bold uppercase tracking-wide text-primary-700">
-                  {hero.highlight}
-                </span>
+              <div className="mb-6 inline-flex items-center rounded-full border border-primary-100 bg-white px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary-700 shadow-sm">
+                {hero.highlight}
               </div>
             )}
-            <h1 className="mb-5 text-4xl font-black leading-tight text-gray-900 md:text-5xl lg:text-6xl">
+
+            <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
               {hero.title}
             </h1>
-            <p className="mb-6 max-w-xl text-lg leading-relaxed text-gray-500">
+
+            <p className="mb-8 max-w-xl text-lg leading-relaxed text-gray-600 md:text-xl">
               {hero.description}
             </p>
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+
+            <div className="flex w-full flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Link href={hero.buttonLink || '#'}>
-                <Button xl>{hero.button || 'Começar Agora'}</Button>
+                <Button xl>{hero.button || 'Saiba Mais'}</Button>
               </Link>
               {hero.secondaryButton && (
-                <div className="flex cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white px-6 py-3 text-base font-bold text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm">
+                <div className="flex cursor-pointer items-center justify-center rounded-lg px-6 py-3 text-base font-semibold text-gray-600 transition-colors hover:text-primary-600">
                   {hero.secondaryButton}
                 </div>
               )}
             </div>
 
-            <div className="mt-6 flex items-center gap-3 text-xs font-medium text-gray-500">
+            <div className="mt-8 flex items-center gap-4 text-sm font-medium text-gray-500">
               <div className="flex -space-x-2">
-                <div className="size-6 rounded-full border-2 border-white bg-gray-200"></div>
-                <div className="size-6 rounded-full border-2 border-white bg-gray-300"></div>
-                <div className="size-6 rounded-full border-2 border-white bg-gray-400"></div>
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="size-8 rounded-full border-2 border-white bg-gray-100"
+                  />
+                ))}
               </div>
-              <p>Junte-se a +100 clientes satisfeitos</p>
+              <p>Junte-se a clientes satisfeitos</p>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="relative rounded-2xl bg-gray-100 shadow-xl shadow-primary-900/10 ring-1 ring-gray-900/5">
+          <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
+            <div className="relative overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-900/5">
               {hero.image ? (
                 <img
                   src={hero.image}
                   alt={hero.title}
-                  className="size-full rounded-2xl object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
               ) : (
-                <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-gray-50 text-gray-300">
-                  <svg
-                    className="size-16"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                <div className="flex aspect-[4/3] w-full items-center justify-center bg-gray-50 text-gray-400">
+                  <span className="text-lg">Imagem Principal</span>
                 </div>
               )}
             </div>
           </div>
         </div>
       </Section>
-    </Background>
+    </div>
   );
 };
 
