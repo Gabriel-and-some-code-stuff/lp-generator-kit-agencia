@@ -72,7 +72,7 @@ def main():
     try:
         # Chamada usando a nova SDK google-genai
         response = client.models.generate_content(
-            model="gemini-2.0-flash", # Ou "gemini-1.5-pro" se preferir
+            model="gemini-3.0-pro", # Ou "gemini-1.5-pro" se preferir
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
                 temperature=0.2,
