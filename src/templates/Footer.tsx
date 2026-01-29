@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <Background color="bg-white border-t border-gray-100">
-      <Section yPadding="py-16">
+      <Section yPadding="py-12 md:py-16">
         <CenteredFooter
           logo={<Logo />}
           iconList={
@@ -25,7 +25,9 @@ const Footer = () => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex size-10 items-center justify-center rounded-full bg-gray-50 text-gray-400 transition-all hover:-translate-y-1 hover:bg-primary-500 hover:text-white"
+                    // MUDANÇA: Cores Hardcoded para cinza (text-gray-500) e hover escuro (text-gray-900) com fundo cinza claro (bg-gray-100)
+                    // Isso evita o conflito de cores azuis e garante contraste.
+                    className="flex size-10 items-center justify-center rounded-full bg-gray-50 text-gray-500 transition-all hover:-translate-y-1 hover:bg-gray-200 hover:text-gray-900"
                     title={item.label}
                   >
                     <span className="sr-only">{item.label}</span>

@@ -8,22 +8,18 @@ const HowItWorks = () => {
   return (
     <Section
       title={howItWorks.title}
-      yPadding="py-16 md:py-20" // Reduzido
-      className="bg-gray-50/50" // Fundo muito leve para diferenciar sutilmente
+      yPadding="py-16 md:py-20"
+      className="bg-gray-50/50"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {' '}
-          {/* Mudado para até 4 colunas em telas grandes */}
+        {/* MUDANÇA: Usando Flex com justify-center para garantir centralização independente da quantidade */}
+        <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
           {howItWorks.steps.map((step: any, index: number) => (
             <div
               key={index}
-              className="relative flex flex-col items-center p-4 text-center"
+              className="relative flex w-full max-w-xs flex-col items-center p-4 text-center"
             >
-              {/* Conector horizontal para desktop (exceto o último) */}
-              {index !== howItWorks.steps.length - 1 && (
-                <div className="absolute left-[60%] top-8 -z-10 hidden h-0.5 w-[80%] bg-gray-200 lg:block" />
-              )}
+              {/* Conector horizontal removido para simplificar o layout flexível e evitar quebras */}
 
               <div className="z-10 mb-6 flex size-16 items-center justify-center rounded-2xl border border-gray-100 bg-white text-xl font-bold text-primary-600 shadow-sm transition-transform hover:scale-110">
                 {index + 1}

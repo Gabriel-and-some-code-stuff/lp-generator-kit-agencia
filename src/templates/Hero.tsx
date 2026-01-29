@@ -41,9 +41,8 @@ const Hero = () => {
         </li>
       </NavbarTwoColumns>
 
-      <Section yPadding="pt-32 pb-16 md:pt-40 md:pb-20">
-        {' '}
-        {/* Ajustado padding top para compensar navbar maior */}
+      {/* Padding Top aumentado (pt-36 mobile / pt-48 desktop) para compensar a navbar maior */}
+      <Section yPadding="pt-36 pb-16 md:pt-48 md:pb-24">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             {hero.highlight && (

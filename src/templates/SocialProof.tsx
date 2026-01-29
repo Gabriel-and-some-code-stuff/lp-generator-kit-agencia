@@ -5,13 +5,26 @@ const SocialProof = () => {
   const { socialProof } = AppConfig as any;
   if (!socialProof) return null;
 
+  // Lógica para suportar tanto galeria detalhada (objetos) quanto logos simples (strings)
+  const hasGallery = socialProof.gallery && socialProof.gallery.length > 0;
+  const hasLogos = socialProof.logos && socialProof.logos.length > 0;
+
+  if (
+    !hasGallery &&
+    !hasLogos &&
+    (!socialProof.testimonials || socialProof.testimonials.length === 0)
+  ) {
+    return null;
+  }
+
   return (
     <Section
       title={socialProof.title}
-      yPadding="py-16 md:py-24" // Reduzido
-      className="bg-gray-50/50" // Leve contraste
+      yPadding="py-16 md:py-24"
+      className="bg-gray-50/50"
     >
-      <div className="mb-16 grid gap-8 md:grid-cols-3">
+      {/* Testimonials Section */}
+      <div className="mb-20 grid gap-8 md:grid-cols-3">
         {socialProof.testimonials.map((testim: any, index: number) => (
           <div
             key={index}
@@ -47,20 +60,48 @@ const SocialProof = () => {
         ))}
       </div>
 
-      {socialProof.logos && socialProof.logos.length > 0 && (
+      {/* Gallery / Logos Section */}
+      {(hasGallery || hasLogos) && (
         <div className="mt-12 text-center">
-          <p className="mb-8 text-xs font-bold uppercase tracking-widest text-gray-400">
-            Empresas que confiam
+          <p className="mb-10 text-sm font-bold uppercase tracking-widest text-gray-400">
+            Empresas e Serviços em Destaque
           </p>
-          <div className="flex flex-wrap justify-center gap-10 opacity-60 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
-            {socialProof.logos.map((logo: string, index: number) => (
-              <img
-                key={index}
-                src={logo}
-                alt="Parceiro"
-                className="h-8 w-auto object-contain md:h-9"
-              />
-            ))}
+
+          {/* MUDANÇA: Grid Adaptável para Galeria com Legendas */}
+          <div className="flex flex-wrap items-stretch justify-center gap-8">
+            {hasGallery
+              ? socialProof.gallery.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    className="group relative flex w-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md sm:w-64"
+                  >
+                    <div className="h-48 w-full overflow-hidden bg-gray-100">
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="flex flex-1 items-center justify-center border-t border-gray-100 p-4">
+                      <p className="text-center text-sm font-bold text-gray-700">
+                        {item.alt}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              : socialProof.logos.map((logo: string, index: number) => (
+                  // Fallback para lista de strings (logos simples)
+                  <div
+                    key={index}
+                    className="flex h-24 w-32 items-center justify-center rounded-lg border border-gray-100 bg-white p-4 shadow-sm transition-transform hover:scale-105"
+                  >
+                    <img
+                      src={logo}
+                      alt={`Parceiro ${index + 1}`}
+                      className="size-full object-contain opacity-70 transition-opacity hover:opacity-100"
+                    />
+                  </div>
+                ))}
           </div>
         </div>
       )}
