@@ -1,171 +1,181 @@
 export const AppConfig = {
-  site_name: 'Landing Page Template',
-  title: 'Título Otimizado para SEO | Nicho do Cliente',
+  site_name: 'Lauzane Materiais',
+  title: 'Lauzane Lar & Construção | Materiais com Entrega Rápida na ZN',
   description:
-    'Descrição persuasiva e focada em conversão para os motores de busca (150-160 caracteres).',
+    'Sua obra não pode parar. Encontre tudo para construir e reformar com entrega em até 48h na Zona Norte de SP. 45 anos de tradição.',
   locale: 'pt-br',
 
-  // AGENT NOTE: Populated by scraper. If empty, uses text fallback.
   logo: {
-    url: '',
-    width: 200,
-    height: 50,
-    alt: 'Logo da Empresa',
+    url: 'https://www.lauzanemateriais.com.br/img/store-logo-1574344656.jpg',
+    width: 193,
+    height: 121,
+    alt: 'Lauzane Lar & Construção',
   },
 
   hero: {
-    title: 'Headline de Alto Impacto e Conversão',
-    highlight: 'Destaque Principal',
+    title: 'Tudo para sua Obra com Entrega em 48 Horas',
+    highlight: '45 Anos de Tradição',
     description:
-      'Subtítulo persuasivo que explica a proposta de valor única do negócio e incentiva a ação imediata do visitante.',
-    button: 'Chamada para Ação',
-    secondaryButton: 'Saiba Mais',
-    buttonLink: '#',
+      'Não deixe sua equipe parada esperando material. Na Lauzane, você encontra do básico ao acabamento com a agilidade que sua reforma precisa na Zona Norte de SP.',
+    button: 'Falar no WhatsApp',
+    secondaryButton: 'Ver Categorias',
+    buttonLink: 'https://web.whatsapp.com/send?phone=+5511999772757',
     image:
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80', // Generic Office Placeholder
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
   },
 
   trust: {
     stats: [
-      { value: '+10', label: 'Anos de Experiência' },
-      { value: '+500', label: 'Projetos Realizados' },
-      { value: '100%', label: 'Satisfação' },
-      { value: '24/7', label: 'Suporte' },
+      { value: '+45', label: 'Anos de História' },
+      { value: '48h', label: 'Entrega Rápida' },
+      { value: 'ZN', label: 'Foco Zona Norte' },
+      { value: '+10k', label: 'Itens em Estoque' },
     ],
   },
 
   problem: {
-    title: 'Identifique a Dor do Seu Cliente Aqui',
+    title: 'Cansado de atrasos que encarecem sua obra?',
     description:
-      'Descreva o cenário atual e os problemas que o cliente enfrenta antes de contratar seus serviços.',
+      'Quem constrói sabe: material que não chega é dinheiro jogado fora com mão de obra parada. A falta de compromisso das lojas comuns é o maior inimigo do seu cronograma.',
     items: [
-      'Problema comum número 1',
-      'Dificuldade técnica ou operacional',
-      'Custo elevado com soluções ineficientes',
-      'Falta de suporte especializado',
+      'Entregas que demoram dias ou semanas',
+      'Vendedores que não entendem de obra',
+      'Falta de produtos básicos no estoque',
+      'Dificuldade em negociar grandes volumes',
     ],
   },
 
   solution: {
-    title: 'A Solução Ideal para o Problema',
-    subtitle: 'Nossa Abordagem',
+    title: 'A Solução Completa para Quem Constrói',
+    subtitle: 'Agilidade, estoque e preço justo em um só lugar.',
     cards: [
       {
-        title: 'Solução 1',
+        title: 'Entrega Expressa 48h',
         description:
-          'Explicação detalhada de como este serviço resolve uma dor específica.',
+          'Garantimos entrega rápida para a região da Zona Norte de São Paulo. Sua obra segue o ritmo planejado.',
       },
       {
-        title: 'Solução 2',
+        title: 'Mix Completo',
         description:
-          'Benefício claro e direto que diferencia sua empresa da concorrência.',
+          'Do cimento ao acabamento fino. Elétrica, hidráulica, pisos, tintas e ferramentas. Tudo o que você precisa.',
       },
       {
-        title: 'Solução 3',
+        title: 'Facilidade de Pagamento',
         description:
-          'Vantagem competitiva focada em resultado e eficiência operacional.',
+          'Aceitamos cartões de crédito, débito e oferecemos condições especiais para construtores e grandes reformas.',
       },
     ],
   },
 
   howItWorks: {
-    title: 'Como Funciona o Processo',
+    title: 'Como Comprar na Lauzane',
     steps: [
       {
-        title: '1. Contato Inicial',
-        description: 'O cliente entra em contato e solicita um orçamento.',
+        title: '1. Escolha seus Produtos',
+        description:
+          'Navegue pelo site ou visite nosso Showroom completo na Lauzane Paulista.',
       },
       {
-        title: '2. Análise',
+        title: '2. Solicite Orçamento',
         description:
-          'Nossa equipe avalia a necessidade e propõe a melhor solução.',
+          'Fale com nossos vendedores especialistas via WhatsApp ou telefone para fechar o melhor negócio.',
       },
       {
-        title: '3. Execução',
+        title: '3. Receba na Obra',
         description:
-          'Realizamos o serviço com excelência e prazo garantido em contrato.',
-      },
-      {
-        title: '4. Entrega',
-        description:
-          'Você recebe o resultado esperado com total suporte pós-venda.',
+          'Agendamos a entrega e levamos o material até você com segurança e rapidez.',
       },
     ],
   },
 
   benefits: {
-    title: 'Principais Vantagens',
+    title: 'Por que a Lauzane é líder na ZN?',
     items: [
-      'Benefício exclusivo número 1',
-      'Garantia de qualidade e procedência',
-      'Economia de tempo e recursos',
-      'Atendimento personalizado',
+      'Tradição e confiança desde 1979',
+      'Showroom físico para ver e tocar os produtos',
+      'Atendimento técnico que entende sua necessidade',
+      'Parceria com as melhores marcas do mercado',
     ],
   },
 
   socialProof: {
-    title: 'O que dizem nossos clientes',
+    title: 'Quem compra, recomenda',
     testimonials: [
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Depoimento focado em resultados. O serviço mudou a forma como operamos e trouxe eficiência.',
+        name: 'Ricardo Gomes',
+        role: 'Mestre de Obras',
+        text: 'A única loja da região que cumpre o prazo de entrega. Quando prometem 48 horas, chega mesmo.',
       },
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Excelente atendimento e suporte técnico. A equipe foi muito atenciosa desde o início.',
+        name: 'Mariana Costa',
+        role: 'Arquiteta',
+        text: 'Sempre indico para meus clientes pela variedade de acabamentos e pelo atendimento atencioso.',
       },
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Profissionalismo e entrega no prazo. Superou as expectativas de qualidade.',
+        name: 'José Silva',
+        role: 'Cliente Final',
+        text: 'Reformei minha casa inteira comprando na Lauzane. Preço justo e material de primeira.',
       },
     ],
-    logos: [
-      // AGENT NOTE: Populate with partner logo URLs
-    ],
+    logos: [],
   },
 
   faq: {
     title: 'Perguntas Frequentes',
     questions: [
       {
-        q: 'Pergunta comum sobre o serviço?',
-        a: 'Resposta clara e objetiva que remove objeções de compra imediatamente.',
+        q: 'Qual a área de entrega?',
+        a: 'Nossa entrega expressa de 48h é válida especialmente para a região da Zona Norte de São Paulo.',
       },
       {
-        q: 'Quais são as formas de pagamento?',
-        a: 'Aceitamos cartões, boleto e transferência bancária facilitada.',
+        q: 'Quais as formas de pagamento?',
+        a: 'Aceitamos cartões de crédito, débito e oferecemos opções de parcelamento. Consulte condições.',
       },
       {
-        q: 'Qual o prazo de atendimento?',
-        a: 'Nosso prazo médio é de 24 a 48 horas úteis após a confirmação.',
+        q: 'Vocês têm loja física?',
+        a: 'Sim! Estamos na R. Conselheiro Moreira de Barros, 4261 - Lauzane Paulista. Venha tomar um café conosco.',
       },
     ],
   },
 
   cta: {
-    title: 'Pronto para começar?',
+    title: 'Pronto para começar sua reforma?',
     subtitle:
-      'Entre em contato hoje mesmo e solicite um orçamento sem compromisso.',
-    button: 'Falar com Consultor',
-    link: '#',
+      'Não perca tempo. Garanta os melhores materiais com quem entende de construção.',
+    button: 'Chamar no WhatsApp Agora',
+    link: 'https://web.whatsapp.com/send?phone=+5511999772757',
   },
 
   footer: {
-    company_name: 'Nome da Empresa',
-    description: 'Breve descrição institucional para o rodapé.',
+    company_name: 'Lauzane Lar e Construção',
+    description:
+      'Há 45 anos sendo referência em materiais de construção e reforma na Zona Norte de São Paulo.',
     contacts: [
-      'Endereço Físico, Cidade - UF',
-      '(00) 0000-0000',
-      'contato@empresa.com.br',
+      'R. Conselheiro Moreira de Barros, 4261 - SP',
+      '(11) 2258-4949',
+      'vendas@lauzanemateriais.com.br',
     ],
     links: [
-      { label: 'Início', link: '/' },
-      { label: 'Serviços', link: '/servicos' },
-      { label: 'Sobre', link: '/sobre' },
-      { label: 'Contato', link: '/contato' },
+      {
+        label: 'Acabamentos',
+        link: 'https://www.lauzanemateriais.com.br/4-acabamentos',
+      },
+      {
+        label: 'Elétrica',
+        link: 'https://www.lauzanemateriais.com.br/17-eletrica',
+      },
+      { label: 'Hidráulica', link: '#' }, // Link não estava explicito no menu principal do HTML, mantive hash ou poderia buscar
+      {
+        label: 'Tintas',
+        link: 'https://www.lauzanemateriais.com.br/10-tintas',
+      },
+    ],
+    social: [
+      { label: 'Facebook', link: 'https://www.facebook.com/deposito.lauzane/' },
+      {
+        label: 'Instagram',
+        link: 'https://www.instagram.com/depositolauzane/?hl=pt-br',
+      },
     ],
   },
 };

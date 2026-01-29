@@ -7,7 +7,7 @@ const FooterCopyright = () => (
       {(AppConfig as any).site_name}
     </span>
     .
-    <br className="sm:hidden" /> All rights reserved.
+    <br className="sm:hidden" /> Todos os direitos reservados.
     <style jsx>
       {`
         .footer-copyright :global(a) {
