@@ -2,8 +2,9 @@ import { Section } from '../layout/Section';
 
 const ContactForm = () => (
   <Section
-    yPadding="py-16 md:py-20" // Reduzido de py-20/28
-    className="border-t border-gray-100 bg-white" // Removido bg-gray-50, agora é clean
+    id="contact" // CORREÇÃO: Adicionado ID para ancoragem
+    yPadding="py-16 md:py-20"
+    className="border-t border-gray-100 bg-white"
   >
     <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-gray-200 bg-white p-8 md:p-12">
       <div className="mb-8 text-center">

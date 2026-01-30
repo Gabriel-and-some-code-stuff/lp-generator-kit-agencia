@@ -1,129 +1,143 @@
 export const AppConfig = {
-  site_name: 'Landing Page Template',
-  title: 'Título Otimizado para SEO | Nicho do Cliente',
+  site_name: 'Grupo Seiri',
+  title:
+    'Grupo Seiri | Soluções Completas em Conservação e Limpeza em Sorocaba',
   description:
-    'Descrição persuasiva e focada em conversão para os motores de busca (150-160 caracteres).',
+    'O Grupo Seiri oferece as melhores soluções em terceirização de limpeza, copeira, portaria, dedetização e sanitização em Sorocaba e região. Qualidade, excelência e produtos biodegradáveis.',
   locale: 'pt-br',
 
-  // AGENT NOTE: Populated by scraper. If empty, uses text fallback.
   logo: {
-    url: '',
-    width: 200,
-    height: 50,
-    alt: 'Logo da Empresa',
+    url: 'assets/images/empresa-conservacao-e-limpeza-em-sorocaba-zona-sul-193x112.png',
+    width: 193,
+    height: 112,
+    alt: 'Grupo Seiri Logo',
   },
 
   hero: {
-    title: 'Headline de Alto Impacto e Conversão',
-    highlight: 'Destaque Principal',
+    title: 'Soluções Completas em Conservação e Limpeza para sua Empresa!',
+    highlight: 'Excelência e Confiança',
     description:
-      'Subtítulo persuasivo que explica a proposta de valor única do negócio e incentiva a ação imediata do visitante.',
-    button: 'Chamada para Ação',
-    secondaryButton: 'Saiba Mais',
-    buttonLink: '#',
-    image:
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80', // Generic Office Placeholder
+      'Equipe especializada, produtos de última geração e atendimento personalizado em Sorocaba e região. Peça seu orçamento sem compromisso!',
+    button: 'Solicitar Orçamento Grátis',
+    secondaryButton: 'Conheça Nossos Serviços',
+    buttonLink: '#form',
+    secondaryButtonLink: '#services',
+    image: 'https://static.photos/workspace/1200x630/15',
   },
 
   trust: {
     stats: [
-      { value: '+10', label: 'Anos de Experiência' },
-      { value: '+500', label: 'Projetos Realizados' },
-      { value: '100%', label: 'Satisfação' },
-      { value: '24/7', label: 'Suporte' },
+      { value: '+23', label: 'Anos de Experiência' },
+      { value: '+500', label: 'Clientes Satisfeitos' },
+      { value: '100%', label: 'Satisfação Garantida' },
+      { value: 'Eco', label: 'Produtos Sustentáveis' },
     ],
   },
 
   problem: {
-    title: 'Identifique a Dor do Seu Cliente Aqui',
+    title: 'Desafios na Manutenção do seu Espaço?',
     description:
-      'Descreva o cenário atual e os problemas que o cliente enfrenta antes de contratar seus serviços.',
+      'Manter um ambiente impecável exige tempo, recursos e expertise. Evite preocupações com a limpeza e foque no que realmente importa para o seu negócio.',
     items: [
-      'Problema comum número 1',
-      'Dificuldade técnica ou operacional',
-      'Custo elevado com soluções ineficientes',
-      'Falta de suporte especializado',
+      'Falta de tempo para gerenciar a limpeza',
+      'Dificuldade em encontrar profissionais qualificados',
+      'Preocupação com a qualidade dos produtos utilizados',
+      'Custos elevados com contratação e treinamento',
     ],
   },
 
   solution: {
-    title: 'A Solução Ideal para o Problema',
-    subtitle: 'Nossa Abordagem',
+    title: 'Nossas Soluções Completas',
+    subtitle: 'Serviços de Limpeza e Conservação com Excelência',
     cards: [
       {
-        title: 'Solução 1',
+        title: 'Limpeza Profissional',
         description:
-          'Explicação detalhada de como este serviço resolve uma dor específica.',
+          'Ambientes sempre limpos e organizados, sem a preocupação com gestão de equipe e produtos.',
       },
       {
-        title: 'Solução 2',
+        title: 'Copeira e Portaria',
         description:
-          'Benefício claro e direto que diferencia sua empresa da concorrência.',
+          'Profissionais treinados para um atendimento discreto e eficiente, garantindo o bom funcionamento do seu dia a dia.',
       },
       {
-        title: 'Solução 3',
+        title: 'Dedetização e Sanitização',
         description:
-          'Vantagem competitiva focada em resultado e eficiência operacional.',
+          'Proteção completa contra pragas e microrganismos, utilizando produtos certificados e seguros.',
+      },
+      {
+        title: 'Limpeza de Estofados',
+        description:
+          'Higienização profunda para prolongar a vida útil e a beleza dos seus móveis.',
       },
     ],
   },
 
   howItWorks: {
-    title: 'Como Funciona o Processo',
+    title: 'Como Funciona Nossa Parceria',
     steps: [
       {
-        title: '1. Contato Inicial',
-        description: 'O cliente entra em contato e solicita um orçamento.',
+        title: '1. Solicite seu Orçamento',
+        description:
+          'Entre em contato e descreva suas necessidades. Nossa equipe fará uma análise detalhada.',
       },
       {
-        title: '2. Análise',
+        title: '2. Planejamento Personalizado',
         description:
-          'Nossa equipe avalia a necessidade e propõe a melhor solução.',
+          'Desenvolvemos um plano de serviços exclusivo, com os produtos e a equipe mais adequados para seu ambiente.',
       },
       {
-        title: '3. Execução',
+        title: '3. Execução e Acompanhamento',
         description:
-          'Realizamos o serviço com excelência e prazo garantido em contrato.',
-      },
-      {
-        title: '4. Entrega',
-        description:
-          'Você recebe o resultado esperado com total suporte pós-venda.',
+          'Nossos profissionais realizam o serviço com excelência, supervisionados regularmente para garantir sua total satisfação.',
       },
     ],
   },
 
   benefits: {
-    title: 'Principais Vantagens',
+    title: 'Vantagens de Escolher o Grupo Seiri',
     items: [
-      'Benefício exclusivo número 1',
-      'Garantia de qualidade e procedência',
-      'Economia de tempo e recursos',
-      'Atendimento personalizado',
+      'Equipe altamente treinada e capacitada',
+      'Uso de produtos biodegradáveis e de última geração',
+      'Supervisão constante para garantia da qualidade',
+      'Atendimento personalizado e flexível às suas necessidades',
     ],
   },
 
   socialProof: {
-    title: 'O que dizem nossos clientes',
-    testimonials: [
+    title: 'Nossos Clientes Confiam',
+    testimonials: [],
+    logos: [],
+    gallery: [
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Depoimento focado em resultados. O serviço mudou a forma como operamos e trouxe eficiência.',
+        image: 'https://static.photos/industry/640x360/21',
+        alt: 'Dedetização e Sanitização',
       },
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Excelente atendimento e suporte técnico. A equipe foi muito atenciosa desde o início.',
+        image: 'https://static.photos/office/640x360/33',
+        alt: 'Portaria/Controlador de Acesso',
       },
       {
-        name: 'Nome do Cliente',
-        role: 'Cargo / Empresa',
-        text: 'Profissionalismo e entrega no prazo. Superou as expectativas de qualidade.',
+        image: 'https://static.photos/minimal/640x360/45',
+        alt: 'Limpeza de Estofados',
       },
-    ],
-    logos: [
-      // AGENT NOTE: Populate with partner logo URLs
+      { image: 'https://static.photos/workspace/640x360/57', alt: 'Copeira' },
+      {
+        image: 'https://static.photos/cityscape/640x360/69',
+        alt: 'Limpeza de Fachadas',
+      },
+      {
+        image: 'https://static.photos/industry/640x360/81',
+        alt: 'Terceirização de limpeza',
+      },
+      {
+        image: 'https://static.photos/workspace/640x360/93',
+        alt: 'Limpeza pós-obra',
+      },
+      {
+        image: 'https://static.photos/office/640x360/7',
+        alt: 'Empresa especializada de limpeza',
+      },
     ],
   },
 
@@ -131,52 +145,50 @@ export const AppConfig = {
     title: 'Perguntas Frequentes',
     questions: [
       {
-        q: 'Pergunta comum sobre o serviço?',
-        a: 'Resposta clara e objetiva que remove objeções de compra imediatamente.',
+        q: 'Quais regiões vocês atendem?',
+        a: 'Atendemos Sorocaba e diversas cidades da região, incluindo Votorantim, Itu, Salto, entre outras. Consulte-nos para verificar sua localidade.',
       },
       {
-        q: 'Quais são as formas de pagamento?',
-        a: 'Aceitamos cartões, boleto e transferência bancária facilitada.',
+        q: 'Como posso solicitar um orçamento?',
+        a: 'Você pode solicitar um orçamento preenchendo nosso formulário de contato, ligando para nossos telefones ou nos chamando diretamente no WhatsApp.',
       },
       {
-        q: 'Qual o prazo de atendimento?',
-        a: 'Nosso prazo médio é de 24 a 48 horas úteis após a confirmação.',
+        q: 'Os produtos de limpeza são seguros e sustentáveis?',
+        a: 'Sim, utilizamos apenas produtos biodegradáveis e de última geração, garantindo a segurança do seu ambiente e o respeito ao meio ambiente.',
       },
     ],
   },
 
   cta: {
-    title: 'Pronto para começar?',
+    title: 'Pronto para Transformar seu Ambiente?',
     subtitle:
-      'Entre em contato hoje mesmo e solicite um orçamento sem compromisso.',
-    button: 'Falar com Consultor',
-    link: '#',
+      'Garanta um espaço impecável com a expertise do Grupo Seiri. Fale conosco e solicite seu orçamento sem compromisso!',
+    button: 'Solicitar Orçamento Agora',
+    link: '#form',
   },
 
   footer: {
-    company_name: 'Nome da Empresa',
-    description: 'Breve descrição institucional para o rodapé.',
+    company_name: 'Grupo Seiri Ltda.',
+    description:
+      'Desde 2000, o Grupo Seiri oferece soluções completas em conservação e limpeza, com foco em excelência, sustentabilidade e satisfação do cliente em Sorocaba e região.',
     contacts: [
-      'Endereço Físico, Cidade - UF',
-      '(00) 0000-0000',
-      'contato@empresa.com.br',
+      'Rua Professora. Maria de Almeida, 104 - Vila Carvalho, Sorocaba - SP, CEP: 18060-130',
+      'Telefone: (15) 3232-6197 / (15) 99660-0747',
+      'Email: contato@gruposeiri.com.br',
     ],
     links: [
       { label: 'Início', link: '/' },
-      { label: 'Serviços', link: '/servicos' },
-      { label: 'Sobre', link: '/sobre' },
-      { label: 'Contato', link: '/contato' },
+      { label: 'Sobre Nós', link: '#about' },
+      { label: 'Serviços', link: '#services' },
+      { label: 'Galeria', link: '#gallery' },
+      { label: 'Orçamento', link: '#form' },
     ],
     social: [
-      { label: 'Facebook', link: 'https://www.facebook.com/deposito.lauzane/' },
       {
         label: 'Instagram',
-        link: 'https://www.instagram.com/depositolauzane/?hl=pt-br',
+        link: 'https://www.instagram.com/gruposeiri/?hl=pt-br',
       },
-      {
-        label: 'WhatsApp',
-        link: 'https://web.whatsapp.com/send?phone=+5511999772757',
-      },
+      { label: 'Facebook', link: 'https://www.facebook.com/GrupoSeirii' },
     ],
   },
 };

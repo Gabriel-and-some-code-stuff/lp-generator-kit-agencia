@@ -1,5 +1,5 @@
 === URL ALVO ===
-https://www.gruposeiri.com.br/index.html#header14-h
+https://www.gruposeiri.com.br/index.html
 
 === INSTRUÇÃO ===
 Analise o HTML abaixo. Extraia:

@@ -7,6 +7,7 @@ const Solution = () => {
 
   return (
     <Section
+      id="services" // CORREÇÃO: Adicionado ID para ancoragem
       title={solution.title}
       description={solution.subtitle}
       yPadding="py-20 md:py-28"
