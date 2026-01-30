@@ -6,7 +6,7 @@ const Problem = () => {
   if (!problem) return null;
 
   return (
-    <Section yPadding="py-20 md:py-28" className="bg-gray-50">
+    <Section id="about" yPadding="py-20 md:py-28" className="bg-gray-50">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
         <div>
           <div className="mb-4 inline-flex items-center rounded-md bg-red-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-red-600 ring-1 ring-inset ring-red-600/10">

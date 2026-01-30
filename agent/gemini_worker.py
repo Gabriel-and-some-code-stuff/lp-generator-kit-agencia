@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # gemini_worker.py
 import os
-import re
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
@@ -20,6 +19,19 @@ CONTEXT_FILE = PROJECT_ROOT / "contexto_para_cursor.txt"
 SYSTEM_PROMPT_FILE = CURRENT_DIR / "prompts" / "system.md"
 APP_CONFIG_PATH = PROJECT_ROOT / "src" / "utils" / "AppConfig.ts"
 TAILWIND_CONFIG_PATH = PROJECT_ROOT / "tailwind.config.js"
+CSS_DIR = CURRENT_DIR / "downloaded_css"
+
+# Delimitadores de Segurança (Devem bater com o System Prompt)
+DELIMITERS = {
+    "app_config": {
+        "start": "<<<<APP_CONFIG_START>>>>",
+        "end": "<<<<APP_CONFIG_END>>>>"
+    },
+    "tailwind": {
+        "start": "<<<<TAILWIND_START>>>>",
+        "end": "<<<<TAILWIND_END>>>>"
+    }
+}
 
 def setup_client():
     if not API_KEY:
@@ -36,37 +48,52 @@ def load_text(path: Path) -> str:
         print(f"❌ Erro: Arquivo não encontrado: {path}")
         sys.exit(1)
 
-def robust_extract_code(text: str, target_signature: str) -> str | None:
+def extract_content_with_delimiters(text: str, start_tag: str, end_tag: str) -> str | None:
     """
-    Extrai código de blocos markdown ``` ``` contendo a assinatura alvo.
-    Possui fallback direto no texto bruto.
+    Extrai conteúdo exato entre delimitadores personalizados.
+    Muito mais seguro que Regex em blocos Markdown.
     """
-    pattern = r"```(?:\w+)?\s*\n(.*?)\n```"
-    matches = re.findall(pattern, text, re.DOTALL)
+    if start_tag not in text or end_tag not in text:
+        return None
+    
+    try:
+        # Encontra o início do conteúdo (após a tag de início)
+        start_index = text.find(start_tag) + len(start_tag)
+        # Encontra o fim do conteúdo
+        end_index = text.find(end_tag)
+        
+        if start_index >= end_index:
+            return None
+            
+        content = text[start_index:end_index].strip()
+        
+        # Remove fences de markdown se o modelo tiver colocado acidentalmente dentro dos delimitadores
+        content = content.replace("```typescript", "").replace("```javascript", "").replace("```ts", "").replace("```js", "").replace("```", "")
+        
+        return content.strip()
+    except Exception as e:
+        print(f"⚠️ Erro durante extração: {e}")
+        return None
 
-    best_match = None
-
-    for match in matches:
-        if target_signature in match:
-            best_match = match
-            break
-
-    if not best_match and target_signature in text:
-        start_index = text.find(target_signature)
-        best_match = text[start_index:]
-        if len(best_match) > 20000:
-            best_match = best_match[:20000]
-
-    if best_match:
-        lines = best_match.splitlines()
-        cleaned_lines = []
-        for line in lines:
-            if "src/utils/AppConfig.ts" in line or "tailwind.config.js" in line:
-                continue
-            cleaned_lines.append(line)
-        return "\n".join(cleaned_lines).strip()
-
-    return None
+def validate_content(content: str, file_type: str) -> bool:
+    """Validação básica de sanidade (Sanity Check)."""
+    if not content or len(content) < 50:
+        return False
+        
+    if file_type == "app_config":
+        if "export const AppConfig" not in content:
+            return False
+        # Verifica se o locale está definido como pt-br
+        if "locale: 'pt-br'" not in content and 'locale: "pt-br"' not in content:
+            print("⚠️ Aviso: O AppConfig gerado pode não estar em PT-BR.")
+            
+    if file_type == "tailwind":
+        if "module.exports" not in content:
+            return False
+        if "colors:" not in content:
+            return False
+            
+    return True
 
 def save_file(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -74,8 +101,27 @@ def save_file(path: Path, content: str) -> None:
         f.write(content)
     print(f"✅ Arquivo salvo: {path}")
 
+
+def load_css_files(path: Path) -> str:
+    """Concatena o conteúdo de todos os arquivos .css no diretório fornecido."""
+    css_contents = []
+    if not path.exists():
+        return ""
+    try:
+        for f in sorted(path.glob("*.css")):
+            try:
+                with open(f, "r", encoding="utf-8") as fh:
+                    css_contents.append(f"/* FILE: {f.name} */\n" + fh.read())
+            except Exception as e:
+                print(f"⚠️ Aviso: não foi possível ler CSS {f}: {e}")
+    except Exception as e:
+        print(f"⚠️ Aviso ao listar CSS em {path}: {e}")
+    return "\n\n".join(css_contents)
+
+
 def main():
-    print("--- INICIANDO AGENTE GEMINI (v2.5 - Flash) ---")
+
+    print("--- INICIANDO AGENTE GEMINI (Hardened Framework) ---")
 
     client = setup_client()
 
@@ -83,19 +129,43 @@ def main():
     raw_html_context = load_text(CONTEXT_FILE)
     system_instruction = load_text(SYSTEM_PROMPT_FILE)
 
+    # REFORÇO DE CONTEXTO (Context Coupling)
+    css_files_content = load_css_files(CSS_DIR)
     full_prompt = f"""
-CONTEXTO DO SITE (HTML BRUTO):
-{raw_html_context}
-"""
+    ===== SOURCE HTML (INPUT) =====
+    The following HTML represents the client's current website.
+    Use this content to fill the AppConfig.
+    
+    {raw_html_context}
+    
+    ===== END OF SOURCE HTML =====
+    
+    ===== CSS FILES (INPUT) =====
+    The following CSS files (external and inlined by the scraper) are provided to help identify colors, variables, and styles used by the site.
+    {css_files_content}
 
-    print("⏳ O Agente está analisando e gerando código...")
+    ===== END OF CSS FILES =====
+
+    CRITICAL INSTRUCTIONS FOR GENERATION:
+    1. **LANGUAGE:** All generated text MUST be in **BRAZILIAN PORTUGUESE (PT-BR)**. Do not output English.
+    2. **COLOR:** Find the PRIMARY ACTION color (Buttons/Links) in the HTML and the provided CSS. Prioritize colors defined in CSS (variables in :root, rules for .btn/.cta/a:hover, etc.). Do not use white/gray as primary.
+    3. **FOOTER:** Extract all contact info and links. Do not leave the footer empty.
+    4. **STRUCTURE:** Follow the System Prompt rules for Multiples of 3/4 in grids.
+    5. **DELIMITERS:** You MUST wrap the output in the requested delimiters:
+       {DELIMITERS['app_config']['start']} ... {DELIMITERS['app_config']['end']}
+       and
+       {DELIMITERS['tailwind']['start']} ... {DELIMITERS['tailwind']['end']}
+    """
+
+    print("⏳ O Agente está analisando e aplicando o framework 'Hardened'...")
 
     try:
+        # Temperatura 0.0 é crucial para seguir regras estritas
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                temperature=0.1,
+                temperature=0.0, 
                 top_p=0.8,
                 top_k=40,
                 max_output_tokens=8192
@@ -110,25 +180,35 @@ CONTEXTO DO SITE (HTML BRUTO):
         print(e)
         sys.exit(1)
 
-    print("💾 Processando resposta do Gemini...")
+    print("💾 Processando e Validando resposta...")
 
-    # AppConfig.ts
-    app_config_code = robust_extract_code(ai_output, "export const AppConfig =")
-    if app_config_code:
+    # Extração AppConfig
+    app_config_code = extract_content_with_delimiters(
+        ai_output, 
+        DELIMITERS['app_config']['start'], 
+        DELIMITERS['app_config']['end']
+    )
+    
+    if app_config_code and validate_content(app_config_code, "app_config"):
         save_file(APP_CONFIG_PATH, app_config_code)
     else:
-        print("⚠️ ALERTA: Não foi possível extrair o AppConfig.ts.")
-        print(ai_output[:1000])
+        print("⚠️ ERRO CRÍTICO: Falha na geração ou validação do AppConfig.ts")
+        # print("Debug - Output:", ai_output) # Descomente se necessário
 
-    # tailwind.config.js
-    tailwind_code = robust_extract_code(ai_output, "module.exports = {")
-    if tailwind_code:
+    # Extração Tailwind
+    tailwind_code = extract_content_with_delimiters(
+        ai_output, 
+        DELIMITERS['tailwind']['start'], 
+        DELIMITERS['tailwind']['end']
+    )
+    
+    if tailwind_code and validate_content(tailwind_code, "tailwind"):
         save_file(TAILWIND_CONFIG_PATH, tailwind_code)
     else:
-        print("⚠️ ALERTA: Não foi possível extrair o tailwind.config.js.")
+        print("⚠️ ERRO CRÍTICO: Falha na geração ou validação do tailwind.config.js")
 
     print("--- PROCESSO CONCLUÍDO ---")
-    print("👉 Rode 'npm run dev' para testar.")
+    print("👉 Verifique se o AppConfig.ts está em Português.")
 
 if __name__ == "__main__":
     main()

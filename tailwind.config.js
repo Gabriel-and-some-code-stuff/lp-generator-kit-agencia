@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -17,15 +16,15 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          100: '#E0F7FA', // Light Cyan
-          200: '#B2EBF2', // Pale Cyan
-          300: '#80DEEA', // Light Blue-Cyan
-          400: '#4DD0E1', // Medium Blue-Cyan
-          500: '#00BCD4', // Primary Blue-Cyan (similar to original secondary button, good for cleaning)
-          600: '#00ACC1', // Darker Blue-Cyan
-          700: '#0097A7', // Even Darker Blue-Cyan
-          800: '#00838F', // Deep Blue-Cyan
-          900: '#006064', // Very Deep Blue-Cyan
+          100: '#E0F2F7',
+          200: '#B3E0ED',
+          300: '#85CCDF',
+          400: '#57B7D1',
+          500: '#29A2C3',
+          600: '#2492B0',
+          700: '#1E7A92',
+          800: '#186275',
+          900: '#124A58',
         },
         gray: {
           50: '#F8FAFC',

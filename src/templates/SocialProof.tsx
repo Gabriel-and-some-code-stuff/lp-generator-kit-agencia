@@ -19,6 +19,7 @@ const SocialProof = () => {
 
   return (
     <Section
+      id="social-proof"
       title={socialProof.title}
       yPadding="py-16 md:py-24"
       className="bg-gray-50/50"
@@ -77,7 +78,7 @@ const SocialProof = () => {
                   >
                     <div className="h-48 w-full overflow-hidden bg-gray-100">
                       <img
-                        src={item.src}
+                        src={item.image || item.src}
                         alt={item.alt}
                         className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />

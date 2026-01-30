@@ -11,14 +11,14 @@ const Hero = () => {
   const hero = config?.hero || {};
 
   return (
-    <div className="relative overflow-hidden bg-white">
+    <div className="relative overflow-hidden bg-white" id="home">
       {/* Background mais neutro */}
       <div className="absolute left-1/2 top-0 -z-10 ml-[-40%] h-[700px] w-[200%] rounded-b-[100%] bg-gray-50/60 opacity-60" />
 
       <NavbarTwoColumns logo={<Logo />}>
         <li>
           <Link
-            href="/"
+            href="#home"
             className="text-gray-600 transition-colors hover:text-primary-600"
           >
             Início
@@ -26,14 +26,22 @@ const Hero = () => {
         </li>
         <li>
           <Link
-            href="/#services"
+            href="#about"
+            className="text-gray-600 transition-colors hover:text-primary-600"
+          >
+            Sobre
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="#services"
             className="text-gray-600 transition-colors hover:text-primary-600"
           >
             Soluções
           </Link>
         </li>
         <li>
-          <Link href={hero.buttonLink || '#'}>
+          <Link href={hero.buttonLink || '#contact'}>
             <div className="rounded-lg bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-md">
               Contato
             </div>
@@ -60,7 +68,7 @@ const Hero = () => {
             </p>
 
             <div className="flex w-full flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
-              <Link href={hero.buttonLink || '#'}>
+              <Link href={hero.buttonLink || '#contact'}>
                 <Button xl>{hero.button || 'Saiba Mais'}</Button>
               </Link>
               {hero.secondaryButton && (

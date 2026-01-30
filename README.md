@@ -26,6 +26,7 @@ O pipeline parte de um site externo (normalmente um site legado, confuso ou mal 
 
 * `clean_source.html` → HTML limpo, sem scripts irrelevantes, ads ou ruído visual.
 * `contexto_para_agente.txt` → Texto normalizado contendo serviços, regiões, claims, diferenciais e pistas semânticas.
+* `agent/downloaded_css/` → Diretório com arquivos CSS baixados e salvos pelo scraper (inclui conteúdo inlined e externo). Esses arquivos são fornecidos ao agente para auxiliar na detecção de paleta de cores e tokens visuais.
 
 O objetivo aqui **não é copiar layout**, mas preservar **informação de negócio**.
 
